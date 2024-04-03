@@ -6,26 +6,22 @@ use bevy::
     asset::{ LoadState, LoadedUntypedAsset },
     diagnostic::{ FrameTimeDiagnosticsPlugin, DiagnosticsStore },
     utils::Duration,
-    utils::{ HashMap, HashSet },
-    sprite::Anchor,
-    render::camera::Viewport,
 };
 use once_cell::sync::Lazy;
 use rand::prelude::*;
-use regex::Regex;
 
 //standard library
 use std::f32::consts::TAU;
 
 //import names from other crates in this package
 use public::*;
-use tigtag_inside as tigtag;
+use tigtag_inside   as tigtag;
+use tigtag3d_inside as tigtag3d;
 
 //internal submodules
 mod debug;
 mod load_assets;
 mod init_app;
-mod tigtag3d;
 
 ////////////////////////////////////////////////////////////////////////////////
 

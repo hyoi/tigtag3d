@@ -4,10 +4,6 @@ use super::*;
 mod schedule;
 pub use schedule::Schedule;
 
-//play_game内共通
-pub mod common; //外部公開
-use common::*;
-
 //マップ、自機、追手の処理
 mod map;
 mod player;

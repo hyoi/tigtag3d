@@ -66,14 +66,14 @@ static PLACE_HOLDER_HEADER_RIGHT: Lazy<Option<usize>> = Lazy::new
 
 //削除するUIをQueryする準備
 type RemoveTargets = Or
-<(  With<init_app::UiHeaderLeft>,
-    With<init_app::UiHeaderCenter>,
-    With<init_app::UiHeaderRight>
+<(  With<UiHeaderLeft>,
+    With<UiHeaderCenter>,
+    With<UiHeaderRight>
 )>;
 
 //ヘッダーをspawnする
 fn spawn_ui_header
-(   qry_hidden_node: Query<Entity, With<init_app::HiddenNode>>,
+(   qry_hidden_node: Query<Entity, With<HiddenNode>>,
     qry_remove_targets: Query<Entity, RemoveTargets>,
     mut cmds: Commands,
     asset_svr: Res<AssetServer>,

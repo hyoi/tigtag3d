@@ -35,7 +35,7 @@ const PLACE_HOLDER_DEMO_RECORD: usize = 3; //text.sections[ 3 ]
 
 //フッターのUIを改造する
 fn add_sections_to_footerleft
-(   mut qry_text: Query<&mut Text, With<init_app::UiFooterLeft>>,
+(   mut qry_text: Query<&mut Text, With<UiFooterLeft>>,
     asset_svr: Res<AssetServer>,
 )
 {   let Ok ( mut text ) = qry_text.get_single_mut() else { return };
@@ -49,7 +49,7 @@ fn add_sections_to_footerleft
 
 //UIの表示を更新する(demo record)
 fn update_demo_record
-(   mut qry_text: Query<&mut Text, With<init_app::UiFooterLeft>>,
+(   mut qry_text: Query<&mut Text, With<UiFooterLeft>>,
     opt_record: Option<ResMut<Record>>,
 )
 {   let Ok ( mut text ) = qry_text.get_single_mut() else { return };

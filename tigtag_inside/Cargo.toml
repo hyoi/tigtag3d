@@ -1,5 +1,5 @@
 [package]
-name = "tigtag3d"
+name = "tigtag_inside"
 version.workspace = true
 edition.workspace = true
 
@@ -9,11 +9,5 @@ edition.workspace = true
 bevy.workspace = true
 once_cell.workspace = true
 rand.workspace = true
-chrono.workspace = true
-regex.workspace = true
 
-tigtag_inside.workspace = true
 public.workspace = true
-
-[features]
-sprite_sheet_off = [] # cargo run --features sprite_sheet_off

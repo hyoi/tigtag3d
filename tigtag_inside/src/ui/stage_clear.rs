@@ -51,7 +51,7 @@ impl<'a> effect::CountDown for CountDown<'a>
 
 //ステージクリアをspawnする
 pub fn spawn_text
-(   qry_hidden_node: Query<Entity, With<init_app::HiddenNode>>,
+(   qry_hidden_node: Query<Entity, With<HiddenNode>>,
     mut cmds: Commands,
     asset_svr: Res<AssetServer>,
 )

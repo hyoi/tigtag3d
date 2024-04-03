@@ -8,7 +8,7 @@ impl Plugin for Schedule
 {   fn build( &self, app: &mut App )
     {   app
         //InitAppの後にGameStartへ遷移させる
-        .insert_resource( init_app::AfterInitApp ( MyState::InitGame ) )
+        .insert_resource( AfterInitApp ( MyState::InitGame ) )
 
         //Resource
         .init_resource::<Record>()   //ゲームの成績

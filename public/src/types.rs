@@ -14,9 +14,15 @@ pub enum MyState
     Pause,
 }
 
-//==============================================================================
 impl MyState
 {   pub fn is_demoplay( &self ) -> bool { self.is_titledemo() || self.is_demoloop() }
+}
+
+//InitAppの後の遷移先を登録するResource
+#[derive( Resource )]
+pub struct AfterInitApp ( pub MyState );
+impl ChangeMyState for AfterInitApp
+{   fn state( &self ) -> MyState { self.0 }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -46,6 +52,24 @@ impl AddOnTraitForIVec2 for IVec2
 
         //アンカーが中央にあるため補正(+0.5)を加えてから変換する
         ( self.as_vec2() + 0.5 ) * unit
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//glamの型にメソッドを追加する準備
+pub trait AddOnTraitForIVec2_2
+{   fn to_3dxz( &self ) -> Vec3;
+}
+
+//glamの型にメソッドを追加する
+impl AddOnTraitForIVec2_2 for IVec2
+{   //平面座標(IVec2)から3D直交座標(Vec3)へ変換する
+    fn to_3dxz( &self ) -> Vec3
+    {   let x = self.x as f32;
+        let y = 0.0; //xz平面上
+        let z = self.y as f32;
+        Vec3::new( x, y, z )
     }
 }
 
@@ -126,6 +150,40 @@ impl SquarePlane
 {   pub fn from_size( size: f32 ) -> Mesh
     {   Plane3d::default().mesh().size( size, size ).build()
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//隠しノードのComponent
+#[derive( Component )] pub struct HiddenNode;
+
+//ヘッダー／フッターのComponent
+#[derive( Component )] pub struct UiHeaderLeft;   //日時表示
+#[derive( Component )] pub struct UiHeaderCenter; //タイトル
+#[derive( Component )] pub struct UiHeaderRight;  //経過時間表示
+#[derive( Component )] pub struct UiFooterLeft;   //FPS表示
+#[derive( Component )] pub struct UiFooterCenter; //auther
+#[derive( Component )] pub struct UiFooterRight;  //Powered by
+
+////////////////////////////////////////////////////////////////////////////////
+
+//画面デザイン(枠)
+pub struct ScreenFrame<'a>
+{   pub design  : Vec<&'a str>,
+    pub viewport: ViewPortInfo,
+    pub minimap : MiniMapInfo,
+}
+
+//3Dカメラの表示領域(viewport)の情報
+pub struct ViewPortInfo
+{   pub origin: Vec2,
+    pub size  : Vec2,
+}
+
+//ミニマップの情報
+pub struct MiniMapInfo
+{   pub zero: IVec2,
+    pub size: IVec2,
 }
 
 ////////////////////////////////////////////////////////////////////////////////

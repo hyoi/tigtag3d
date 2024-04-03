@@ -114,8 +114,8 @@ pub const MAP_GRIDS_HEIGHT: i32 = 19 - 2; // h <= SCREEN_GRIDS_HEIGHT - 2;
 //マップ座標から画面座標へ変換する際の調整値
 // const ADJUST_MAP_ON_SCREEN: IVec2 = IVec2::new( 0, 1 );
 const ADJUST_MAP_ON_SCREEN: IVec2 = IVec2::new
-(   super::tigtag3d::common::VIEWPORT_MINIMAP_SIZE.x + SCREEN_GRIDS_WIDTH,
-    super::tigtag3d::common::VIEWPORT_MINIMAP_SIZE.y + 1
+(   VIEWPORT_MINIMAP_SIZE.x + SCREEN_GRIDS_WIDTH,
+    VIEWPORT_MINIMAP_SIZE.y + 1
 );
 
 //マップのレンジ（外壁含む）

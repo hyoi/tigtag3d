@@ -10,4 +10,4 @@ bevy.workspace = true
 regex.workspace = true
 
 tigtag_inside.workspace = true
-public.workspace = true
+share.workspace = true

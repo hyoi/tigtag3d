@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = [ "tigtag3d", "tigtag3d_inside", "tigtag_inside", "public", "macros", "macros_inside" ]
+members = [ "tigtag3d", "tigtag3d_inside", "tigtag_inside", "share", "macros", "macros_inside" ]
 
 [workspace.package]
 version = "0.1.0"
@@ -20,7 +20,7 @@ proc-macro2 = "1"
 
 tigtag3d_inside = { path = "tigtag3d_inside" }
 tigtag_inside   = { path = "tigtag_inside"   }
-public          = { path = "public"          }
+share           = { path = "share"           }
 macros          = { path = "macros"          }
 macros_inside   = { path = "macros_inside"   }
 

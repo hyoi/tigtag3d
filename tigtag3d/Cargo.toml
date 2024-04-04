@@ -13,7 +13,7 @@ chrono.workspace = true
 
 tigtag3d_inside.workspace = true
 tigtag_inside.workspace = true
-public.workspace = true
+share.workspace = true
 
 [features]
 sprite_sheet_off = [] # cargo run --features sprite_sheet_off

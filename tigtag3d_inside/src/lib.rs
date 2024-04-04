@@ -8,7 +8,7 @@ use bevy::
 use regex::Regex;
 
 //import names from other crates in this package
-use public::*;
+use share::*;
 use tigtag_inside::prelude as tigtag;
 
 //ゲームロジック

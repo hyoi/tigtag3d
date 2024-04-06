@@ -68,6 +68,7 @@ pub fn spawn_minimap_camera
         clear_color: CAMERA_BGCOLOR_2D,
         ..default()
     } )
+    .insert( Transform::from_rotation( Quat::from_rotation_z( PI ) ) )
     .id()
     ;
     cmds.entity( player_id ).push_children( &[ child ] );

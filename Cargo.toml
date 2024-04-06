@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = [ "tigtag3d", "tigtag3d_inside", "tigtag_inside", "share", "macros", "macros_inside" ]
+members = [ "crates/tigtag3d" ]
 
 [workspace.package]
 version = "0.1.0"
@@ -18,11 +18,11 @@ syn = "2"
 quote = "1"
 proc-macro2 = "1"
 
-tigtag3d_inside = { path = "tigtag3d_inside" }
-tigtag_inside   = { path = "tigtag_inside"   }
-share           = { path = "share"           }
-macros          = { path = "macros"          }
-macros_inside   = { path = "macros_inside"   }
+tigtag3d_inside = { path = "crates/tigtag3d_inside" }
+tigtag_inside   = { path = "crates/tigtag_inside"   }
+share           = { path = "crates/share"           }
+macros          = { path = "crates/macros"          }
+macros_inside   = { path = "crates/macros_inside"   }
 
 # WASMの場合にどれか指定する必要がある？？
 # rand = { version = "0.8.4", features = [ "wasm-bindgen" ] }

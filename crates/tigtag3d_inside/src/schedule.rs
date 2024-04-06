@@ -193,7 +193,7 @@ fn set_title_logo
 (   mut qry_text: Query<&mut Text, With<tigtag::TextTitleLogo>>,
 )
 {   let Ok ( mut text ) = qry_text.get_single_mut() else { return };
-    text.sections[ 0 ].value = GAME_TITLE_LOGO.to_string();
+    text.sections[ 0 ].value = APP_TITLE.to_string();
 }
 
 ////////////////////////////////////////////////////////////////////////////////

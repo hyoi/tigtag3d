@@ -1,10 +1,10 @@
 //external crates
 use bevy::
 {   prelude::*,
+    input::keyboard::NativeKeyCode,
     sprite::MaterialMesh2dBundle,
     utils::{ HashMap, HashSet },
     audio::Volume,
-    input::keyboard::NativeKeyCode,
 };
 use once_cell::sync::Lazy;
 use rand::prelude::*;

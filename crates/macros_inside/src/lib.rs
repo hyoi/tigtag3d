@@ -13,6 +13,7 @@ pub fn derive_mystate( input: TokenStream ) -> TokenStream
     let enum_type = ast.ident;
     let mut enum_variant = Vec::new();
     let mut is_variant = Vec::new();
+
     if let Data::Enum( my_enum ) = ast.data
     {   for my_variant in my_enum.variants.into_iter()
         {   {   let lower_ident = my_variant.ident.to_string().to_lowercase();

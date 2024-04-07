@@ -7,9 +7,6 @@ use bevy::
 };
 use regex::Regex;
 
-//standard library
-use std::f32::consts::PI;
-
 //import names from other crates in this package
 use share::*;
 use tigtag_inside::prelude as tigtag;

@@ -89,10 +89,11 @@ pub fn spawn_3d_map_entity
             //地面も相対位置でspawnする
             let width  = tigtag::MAP_GRIDS_WIDTH  as f32;
             let height = tigtag::MAP_GRIDS_HEIGHT as f32;
-            let translation = Vec3::new( width * 0.5, 0.0, height * 0.5 ) - Vec3::ONE * 0.5;
+            let translation = Vec3::new( width * 0.5, height * -0.5, 0.0 ) - Vec3::ONE * 0.5;
+            let transform = Transform::from_translation( translation );
             cmds.spawn( PbrBundle::default() )
             .insert( meshes.add( Plane3d::default().mesh().size( width, height ) ) )
-            .insert( Transform::from_translation( translation ) )
+            .insert( transform.with_rotation( Quat::from_rotation_x( PI * 0.5 )) )
             .insert( materials.add( texture_ground ) )
             ;
         }

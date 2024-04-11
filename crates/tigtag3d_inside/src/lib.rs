@@ -7,6 +7,9 @@ use bevy::
 };
 use regex::Regex;
 
+//standard library
+use std::f32::consts::PI;
+
 //import names from other crates in this package
 use share::*;
 use tigtag_inside::prelude as tigtag;
@@ -181,9 +184,11 @@ fn spawn_camera3d_with_viewport
     );
 
     //カメラの注視点をマップ中央の3D座標とする
-    let x = ( tigtag::MAP_GRIDS_WIDTH  - 1 ) as f32 * 0.5;
-    let z = ( tigtag::MAP_GRIDS_HEIGHT - 1 ) as f32 * 0.5;
-    let look_at = Vec3::new( x, 0.0, z );
+    let     x = ( tigtag::MAP_GRIDS_WIDTH  - 1 ) as f32 *  0.5;
+    let neg_y = ( tigtag::MAP_GRIDS_HEIGHT - 1 ) as f32 * -0.5;
+    let look_at = Vec3::new( x, neg_y, 0.0 );
+    let vec3 = Orbit::default().to_vec3() + look_at;
+    let transform = Transform::from_translation( vec3 );
 
     //3Dカメラ
     let camera = Camera
@@ -192,8 +197,6 @@ fn spawn_camera3d_with_viewport
         viewport,
         ..default()
     };
-    let vec3 = Orbit::default().to_vec3() + look_at;
-    let transform = Transform::from_translation( vec3 );
 
     //カメラをspawnする
     cmds.spawn( Camera3dBundle:: default() )

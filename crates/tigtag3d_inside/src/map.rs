@@ -43,7 +43,6 @@ pub fn spawn_3d_map_entity
 
     //壁のサイズ、原点の壁のテクスチャ、他の壁のテクスチャ、地面のテクスチャ
     let wall_size = Vec3::ONE * WALL_CUBE_SIZE * if DEBUG() { 0.95 } else { 1.0 };
-
     let ( texture_wall_zero, texture_wall_normal )
         = if DEBUG()
         {   ( WALL_CUBE_COLOR_ZERO.into(), WALL_CUBE_COLOR.into() )
@@ -55,7 +54,6 @@ pub fn spawn_3d_map_entity
             };
             ( material.clone(), material )
         };
-
     let texture_ground = GROUND_PLANE_COLOR;
     let dot_radius = WALL_CUBE_SIZE * 0.1;
 

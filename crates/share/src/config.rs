@@ -138,7 +138,7 @@ const CAMERA_BG_COLOR  : ClearColorConfig = ClearColorConfig::Custom( Color::BLA
 
 //3Dライトの設定
 pub const LIGHT_3D_BRIGHTNESS : f32  = 3000.0; //明るさ
-pub const LIGHT_3D_TRANSLATION: Vec3 = Vec3::new( 30.0, -40.0, 100.0 ); //位置
+pub const LIGHT_3D_TRANSLATION: Vec3 = Vec3::new( -100.0, 300.0, 300.0 ); //位置
 
 ////////////////////////////////////////////////////////////////////////////////
 

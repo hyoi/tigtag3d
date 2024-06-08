@@ -35,6 +35,7 @@ pub trait ColorConstants
     const GOLD     : Color;
     const CYAN     : Color;
     const PINK     : Color;
+    const MAROON   : Color;
 }
 
 //カラー定数を bevy::prelude::Color へ追加（とりあえず）
@@ -52,6 +53,7 @@ impl ColorConstants for bevy::prelude::Color
     const GOLD     : Color = Color::Srgba( css::GOLD      );
     const CYAN     : Color = Color::Srgba( css::AQUA      );
     const PINK     : Color = Color::Srgba( css::PINK      );
+    const MAROON   : Color = Color::Srgba( css::MAROON    );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

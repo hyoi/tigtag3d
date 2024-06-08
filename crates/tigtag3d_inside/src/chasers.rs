@@ -49,13 +49,13 @@ pub fn update_3d_chasers
     let mut evt_color = HashSet::new();
     for x in evt_timer.read()
     {   let vec = &x.0;
-        vec.iter().for_each( |c| { evt_color.insert( c.as_rgba_u32() ); } );
+        vec.iter().for_each( |c| { evt_color.insert( LinearRgba::from( *c ).as_u32() ); } );
     }
 
     //敵キャラの色をキーに3Dの位置を保存
     let mut hash_transform = HashMap::new();
     for ( transform, chaser3d ) in qry_transform.iter_mut()
-    {   hash_transform.insert( chaser3d.0.as_rgba_u32(), transform );
+    {   hash_transform.insert( LinearRgba::from( chaser3d.0 ).as_u32(), transform );
     }
 
     //前回からの経過時間
@@ -63,8 +63,8 @@ pub fn update_3d_chasers
 
     //複数の敵キャラをループで処理
     for chaser in qry_chasers.iter()
-    {   let color_u32 = chaser.color.as_rgba_u32();
-        let transform =  &mut hash_transform.get_mut( &color_u32 ).unwrap();
+    {   let color_u32 = LinearRgba::from( chaser.color ).as_u32();
+        let transform = &mut hash_transform.get_mut( &color_u32 ).unwrap();
         let time_delta = time_delta.mul_f32( chaser.speedup );
 
         if ! evt_color.contains( &color_u32 )

@@ -128,7 +128,7 @@ fn spawn_screen_frame
 )
 {   let custom_size = Some ( GRID_CUSTOM_SIZE );
     let alpha = if DEBUG() { 0.5 } else { 1.0 }; //DEBUG時に透過させる
-    let color = Color::rgba( 1.0, 1.0, 1.0, alpha );
+    let color = Color::srgba( 1.0, 1.0, 1.0, alpha );
     let regex = Regex::new( SCREEN_FRAME_LABEL_REGEX ).unwrap();
     let adjust = Vec2::X * PIXELS_PER_GRID / 2.0;
 

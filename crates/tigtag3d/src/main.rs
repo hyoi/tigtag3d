@@ -15,7 +15,7 @@ use std::f32::consts::TAU;
 
 //import names from other crates in this package
 use share::*;
-// use tigtag_inside   as tigtag;
+use tigtag_inside   as tigtag;
 // use tigtag3d_inside as tigtag3d;
 
 //internal submodules
@@ -101,7 +101,7 @@ fn main()
     .init_state::<MyState>() //Stateを初期化する。enumの#[default]で初期値指定
     .add_plugins( load_assets::Schedule ) //assetsの事前ロード
     .add_plugins( init_app::Schedule    ) //事前処理
-    // .add_plugins( tigtag::Schedule      ) //ゲームロジック
+    .add_plugins( tigtag::Schedule      ) //ゲームロジック
     // .add_plugins( tigtag3d::Schedule    ) //ゲームロジック3D
     ;
 

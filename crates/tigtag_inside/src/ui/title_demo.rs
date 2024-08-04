@@ -3,13 +3,14 @@ use super::*;
 ////////////////////////////////////////////////////////////////////////////////
 
 //メッセージの設定
-const TITLE_COLOR: Color = Color::srgba( 0.6, 1.0, 0.4, 0.75 );
+const TITLE_COLOR1: Color = Color::srgba( 0.6, 1.0, 0.4, 0.75 );
+const TITLE_COLOR2: Color = Color::srgba( 0.0, 0.7, 0.5, 0.75 );
 
 const UI_TITLE: &[ MessageSect ] =
-&[  ( APP_TITLE, ASSETS_FONT_PRESSSTART2P_REGULAR, PIXELS_PER_GRID * 3.5, TITLE_COLOR ),
-    ( "\nv"    , ASSETS_FONT_ORBITRON_BLACK      , PIXELS_PER_GRID * 0.6, TITLE_COLOR ),
-    ( APP_VER  , ASSETS_FONT_ORBITRON_BLACK      , PIXELS_PER_GRID * 0.6, TITLE_COLOR ),
-    ( "     \n", ASSETS_FONT_ORBITRON_BLACK      , PIXELS_PER_GRID * 0.6, Color::NONE ),
+&[  ( APP_TITLE, ASSETS_FONT_PRESSSTART2P_REGULAR, PIXELS_PER_GRID * 3.5, TITLE_COLOR1 ),
+    ( "\nv"    , ASSETS_FONT_ORBITRON_BLACK      , PIXELS_PER_GRID * 0.6, TITLE_COLOR2 ),
+    ( APP_VER  , ASSETS_FONT_ORBITRON_BLACK      , PIXELS_PER_GRID * 0.6, TITLE_COLOR2 ),
+    ( "     \n", ASSETS_FONT_ORBITRON_BLACK      , PIXELS_PER_GRID * 0.6, Color::NONE  ),
 ];
 
 const UI_DEMO: &[ MessageSect ] =

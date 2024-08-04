@@ -66,10 +66,10 @@ pub trait AddOnTraitForIVec2_2
 impl AddOnTraitForIVec2_2 for IVec2
 {   //平面座標(IVec2)から3D直交座標(Vec3)へ変換する
     fn to_3dxz( &self ) -> Vec3
-    {   let x = self.x as f32;
-        let y = 0.0; //xz平面上
-        let z = self.y as f32;
-        Vec3::new( x, y, z )
+    {   let     x = self.x as f32;
+        let neg_y = self.y as f32 * -1.0;
+        let     z = 0.0; //xy平面上
+        Vec3::new( x, neg_y, z )
     }
 }
 

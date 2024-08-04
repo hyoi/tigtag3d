@@ -12,7 +12,7 @@ const GROUND_PLANE_COLOR  : Color = Color::MAROON; //地面の色
 #[derive( Component )]
 pub struct MapZeroEntity;
 
-//3DドットEntityの保存用2次元vec
+//3DドットのEntityID保存用Resource(2次元vec)
 #[derive( Resource )]
 pub struct Dots3D { entities: Vec<Vec<Option<Entity>>> }
 
@@ -32,6 +32,7 @@ pub fn spawn_3d_map_entity
     opt_dots3d: Option<ResMut<Dots3D>>,
     map: Res<tigtag::Map>,
     mut cmds: Commands,
+    asset_svr: Res<AssetServer>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<StandardMaterial>>,
 )
@@ -42,8 +43,17 @@ pub fn spawn_3d_map_entity
 
     //壁のサイズ、原点の壁のテクスチャ、他の壁のテクスチャ、地面のテクスチャ
     let wall_size = Vec3::ONE * WALL_CUBE_SIZE * if DEBUG() { 0.95 } else { 1.0 };
-    let texture_wall_zero = if DEBUG() { WALL_CUBE_COLOR_ZERO } else { WALL_CUBE_COLOR };
-    let texture_wall_normal: StandardMaterial = WALL_CUBE_COLOR.into();
+    let ( texture_wall_zero, texture_wall_normal )
+        = if DEBUG()
+        {   ( WALL_CUBE_COLOR_ZERO.into(), WALL_CUBE_COLOR.into() )
+        }
+        else
+        {   let material = StandardMaterial
+            {   base_color_texture: Some( asset_svr.load( ASSETS_SPRITE_BRICK_WALL ) ),
+                ..default()
+            };
+            ( material.clone(), material )
+        };
     let texture_ground = GROUND_PLANE_COLOR;
     let dot_radius = WALL_CUBE_SIZE * 0.1;
 
@@ -89,10 +99,11 @@ pub fn spawn_3d_map_entity
             //地面も相対位置でspawnする
             let width  = tigtag::MAP_GRIDS_WIDTH  as f32;
             let height = tigtag::MAP_GRIDS_HEIGHT as f32;
-            let translation = Vec3::new( width * 0.5, 0.0, height * 0.5 ) - Vec3::ONE * 0.5;
+            let translation = Vec3::new( width * 0.5, height * -0.5, 0.0 ) - Vec3::ONE * 0.5;
+            let transform = Transform::from_translation( translation );
             cmds.spawn( PbrBundle::default() )
             .insert( meshes.add( Plane3d::default().mesh().size( width, height ) ) )
-            .insert( Transform::from_translation( translation ) )
+            .insert( transform.with_rotation( Quat::from_rotation_x( PI * 0.5 )) )
             .insert( materials.add( texture_ground ) )
             ;
         }

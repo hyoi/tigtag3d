@@ -73,7 +73,7 @@ pub static SCREEN_FRAME: Lazy<ScreenFrame> = Lazy::new
             "#                               ###########", //9
             "#                               ###########", //10
             "#                               ###########", //11
-            "#                               #tigtag2D##", //12
+            "#                               #TigTag2D##", //12
             "#                               #         #", //13
             "#                               #         #", //14
             "#                               #         #", //15
@@ -138,7 +138,7 @@ const CAMERA_BG_COLOR  : ClearColorConfig = ClearColorConfig::Custom( Color::BLA
 
 //3Dライトの設定
 pub const LIGHT_3D_BRIGHTNESS : f32  = 3000.0; //明るさ
-pub const LIGHT_3D_TRANSLATION: Vec3 = Vec3::new( 30.0, 100.0, 40.0 ); //位置
+pub const LIGHT_3D_TRANSLATION: Vec3 = Vec3::new( -100.0, 300.0, 300.0 ); //位置
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -154,8 +154,8 @@ pub const CAMERA_POSITION_DEFAULT_2D: Vec3 = Vec3::new
 
 //極座標カメラの設定
 pub const CAMERA_ORBIT_INIT_R    : f32 = 21.9;      //初期値
-pub const CAMERA_ORBIT_INIT_THETA: f32 = PI  * 1.0; //初期値(ラジアン) 1.0:天頂、0.5:真横、0.0:真下
-pub const CAMERA_ORBIT_INIT_PHI  : f32 = TAU * 0.5; //初期値(ラジアン) 6時方向が0.0で反時計回り
+pub const CAMERA_ORBIT_INIT_THETA: f32 = PI  * 0.5; //初期値(ラジアン) 1.0:天頂、0.5:真横、0.0:真下
+pub const CAMERA_ORBIT_INIT_PHI  : f32 = TAU * 0.0; //初期値(ラジアン) 6時方向が0.0で反時計回り
 
 pub const CAMERA_ORBIT_MAX_R    : f32 = 50.0;      //rの最大値
 pub const CAMERA_ORBIT_MIN_R    : f32 = 1.0;       //rの最小値

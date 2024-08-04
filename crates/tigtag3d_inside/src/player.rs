@@ -94,8 +94,8 @@ pub fn update_3d_player
         {   //移動中の中割座標
             let delta = time_delta.as_secs_f32() * PLAYER_SPEED;
             match player.direction
-            {   tigtag::News::North => transform.translation.z -= delta,
-                tigtag::News::South => transform.translation.z += delta,
+            {   tigtag::News::North => transform.translation.y += delta,
+                tigtag::News::South => transform.translation.y -= delta,
                 tigtag::News::East  => transform.translation.x += delta,
                 tigtag::News::West  => transform.translation.x -= delta,
             }

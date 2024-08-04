@@ -47,7 +47,4 @@ mod detection;
 //デモ
 mod demo;
 
-//名前の輸出用prelude
-pub mod prelude;
-
 //End of code.

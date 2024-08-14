@@ -12,4 +12,4 @@ chrono.workspace = true
 
 tigtag3d_inside.workspace = true
 tigtag_inside.workspace = true
-share.workspace = true
+template.workspace = true

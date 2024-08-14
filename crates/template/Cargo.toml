@@ -1,5 +1,5 @@
 [package]
-name = "share"
+name = "template"
 version.workspace = true
 edition.workspace = true
 

@@ -16,7 +16,7 @@ use std::
 };
 
 //import names from other crates in this package
-use share::*;
+use template::*;
 use tigtag_inside   as tigtag;
 use tigtag3d_inside as tigtag3d;
 

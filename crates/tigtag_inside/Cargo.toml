@@ -9,4 +9,4 @@ edition.workspace = true
 bevy.workspace = true
 rand.workspace = true
 
-share.workspace = true
+template.workspace = true

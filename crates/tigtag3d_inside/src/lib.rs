@@ -11,7 +11,7 @@ use regex::Regex;
 use std::f32::consts::PI;
 
 //import names from other crates in this package
-use share::*;
+use template::*;
 use tigtag_inside::prelude as tigtag;
 
 //マップ、自機、追手の処理

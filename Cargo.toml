@@ -3,7 +3,7 @@ resolver = "2"
 members = [ "crates/tigtag3d" ]
 
 [workspace.package]
-version = "0.2.1"
+version = "0.3.0"
 edition = "2021"
 
 [workspace.dependencies]
@@ -18,7 +18,7 @@ proc-macro2 = "1.0"
 
 tigtag3d_inside = { path = "crates/tigtag3d_inside" }
 tigtag_inside   = { path = "crates/tigtag_inside"   }
-share           = { path = "crates/share"           }
+template        = { path = "crates/template"        }
 macros          = { path = "crates/macros"          }
 macros_inside   = { path = "crates/macros_inside"   }
 

@@ -64,7 +64,7 @@ struct LoadingMessage<'a>
     width : f32,
     height: f32,
 }
-static NOWLOADING: Lazy<LoadingMessage> = Lazy::new
+static NOWLOADING: LazyLock<LoadingMessage> = LazyLock::new
 (   ||
     {   let design = vec!
         [//  0123456789 123456789 123456789 123456789 12345

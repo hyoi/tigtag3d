@@ -6,12 +6,12 @@ use bevy::
     utils::{ HashMap, HashSet },
     audio::Volume,
 };
-use once_cell::sync::Lazy;
 use rand::prelude::*;
 
 //standard library
 use std::
-{   ops::Range,
+{   sync::LazyLock,
+    ops::Range,
     f32::consts::{ PI, TAU },
     ops::{ Add, AddAssign },
     cmp::Ordering,

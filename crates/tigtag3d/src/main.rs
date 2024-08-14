@@ -7,11 +7,13 @@ use bevy::
     diagnostic::{ FrameTimeDiagnosticsPlugin, DiagnosticsStore },
     utils::Duration,
 };
-use once_cell::sync::Lazy;
 use rand::prelude::*;
 
 //standard library
-use std::f32::consts::TAU;
+use std::
+{   sync::LazyLock,
+    f32::consts::TAU,
+};
 
 //import names from other crates in this package
 use share::*;

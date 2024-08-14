@@ -83,7 +83,7 @@ const PLAYER_SPRITE_COLOR: Color = Color::YELLOW;
 pub const  SPRITE_SHEET_SIZE_PLAYER: UVec2 = UVec2::new( 8, 8 );
 pub const  SPRITE_SHEET_COLS_PLAYER: u32 = 4;
 pub const  SPRITE_SHEET_ROWS_PLAYER: u32 = 4;
-pub static SPRITE_SHEET_IDXS_PLAYER: Lazy<HashMap<News,u32>> = Lazy::new
+pub static SPRITE_SHEET_IDXS_PLAYER: LazyLock<HashMap<News,u32>> = LazyLock::new
 (   ||
     HashMap::from
     (   [   ( News::North,  0 ),

@@ -6,11 +6,11 @@ use bevy::
     ecs::query::QueryFilter,
     color::palettes::css,
 };
-use once_cell::sync::Lazy;
 
 //standard library
 use std::
-{   ops::Range,
+{   sync::LazyLock,
+    ops::Range,
     f32::consts::{ PI, TAU },
 };
 

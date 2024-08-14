@@ -79,7 +79,7 @@ const MAX_Y: i32 = map::MAP_GRIDS_HEIGHT - 2;
 const  SPRITE_SHEET_SIZE_CHASER: UVec2 = UVec2::new( 8, 8 );
 const  SPRITE_SHEET_COLS_CHASER: u32 = 4;
 const  SPRITE_SHEET_ROWS_CHASER: u32 = 4;
-static SPRITE_SHEET_IDXS_CHASER: Lazy<HashMap<News,u32>> = Lazy::new
+static SPRITE_SHEET_IDXS_CHASER: LazyLock<HashMap<News,u32>> = LazyLock::new
 (   ||
     HashMap::from
     (   [   ( News::North,  0 ),

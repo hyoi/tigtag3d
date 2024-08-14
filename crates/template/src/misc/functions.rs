@@ -2,34 +2,92 @@ use super::*;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//操作を受付けるgamepadを切り替える
-pub fn change_gamepad_connection
-(   opt_gamepad: Option<ResMut<TargetGamepad>>,
-    gamepads: Res<Gamepads>,
+//デフォルトカメラのComponent
+#[derive( Component )] pub struct CameraDefault2d;
+#[derive( Component )] pub struct CameraDefault3d;
+
+//デフォルト2Dカメラをspawnする
+pub fn spawn_camera_2d( mut cmds: Commands )
+{   //タイトルバーWクリックや最大化ボタンによるウィンドウ最大化、および
+    //WASMでCanvasへのfit(最大化)を設定した場合に表示が著しく崩れることがある。
+    //それを緩和するためカメラにviewportを設定しておく
+    let zero = UVec2::new( 0, 0 );
+    let size = Vec2::new( SCREEN_PIXELS_WIDTH, SCREEN_PIXELS_HEIGHT );
+    let viewport = Some
+    (   bevy::render::camera::Viewport
+        {   physical_position: zero,
+            physical_size    : size.as_uvec2(),
+            ..default()
+        }
+    );
+
+    cmds.spawn( ( Camera2dBundle::default(), CameraDefault2d ) )
+    .insert( Camera
+    {   order: CAMERA_ORDER_DEFAULT_2D,
+        clear_color: CAMERA_BGCOLOR_2D,
+        viewport,
+        ..default()
+    } )
+    .insert( Transform::from_translation( CAMERA_POSITION_DEFAULT_2D ) )
+    ;
+}
+
+//デフォルト3Dカメラをspawnする
+pub fn spawn_camera_3d( mut cmds: Commands )
+{   //タイトルバーWクリックや最大化ボタンによるウィンドウ最大化、および
+    //WASMでCanvasへのfit(最大化)を設定した場合に表示が著しく崩れることがある。
+    //それを緩和するためカメラにviewportを設定しておく
+    let zero = UVec2::new( 0, 0 );
+    let size = Vec2::new( SCREEN_PIXELS_WIDTH, SCREEN_PIXELS_HEIGHT );
+    let viewport = Some
+    (   bevy::render::camera::Viewport
+        {   physical_position: zero,
+            physical_size    : size.as_uvec2(),
+            ..default()
+        }
+    );
+
+    //3Dカメラの座標を初期化する（オービットカメラ）
+    let vec3 = Orbit::default().to_vec3();
+
+    cmds.spawn( ( Camera3dBundle:: default(), CameraDefault3d ) )
+    .insert( Camera
+    {   order: CAMERA_ORDER_DEFAULT_3D,
+        clear_color: CAMERA_BGCOLOR_3D,
+        viewport,
+        ..default()
+    } )
+    .insert( Transform::from_translation( vec3 ).looking_at( Vec3::ZERO, Vec3::Y ) )
+    ;
+}
+
+//3D lightをspawnする
+pub fn spawn_3d_light( mut cmds: Commands )
+{   let illuminance = LIGHT_3D_BRIGHTNESS;
+    let shadows_enabled = true;
+    let transform = Transform::from_translation( LIGHT_3D_TRANSLATION );
+
+    cmds.spawn( DirectionalLightBundle::default() )
+    .insert( DirectionalLight { illuminance, shadows_enabled, ..default() } )
+    .insert( transform.looking_at( Vec3::ZERO, Vec3::Y ) )
+    ;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//[ESC]キー押し下げでアプリを終了する
+//※bevy::window::close_on_escがv0.14.0で廃止になったため代替
+//  remove close_on_esc #12859 https://github.com/bevyengine/bevy/pull/12859
+pub fn close_on_esc
+(   mut cmds: Commands,
+    windows: Query< ( Entity, &Window ) >,
+    input: Res< ButtonInput< KeyCode > >,
 )
-{   let Some ( mut gamepad ) = opt_gamepad else { return };
-
-    //IDが保存されている場合
-    if let Some ( id ) = gamepad.id()
-    {   //該当gamepadが接続中なら
-        if gamepads.contains( id ) { return }
-
-        //gamepadが接続されていない（＝全部外された）
-        if gamepads.iter().count() == 0
-        {   *gamepad.id_mut() = None;
-
-            #[cfg( debug_assertions )]
-            dbg!( gamepad.id() ); //for debug
-
-            return;
+{   for ( id, window ) in windows.iter()
+    {   if window.focused && input.just_pressed( KeyCode::Escape )
+        {   cmds.entity( id ).despawn();
         }
     }
-
-    //接続中のものを１つ取り出して切り替える
-    *gamepad.id_mut() = gamepads.iter().next();
-
-    #[cfg( debug_assertions )]
-    if gamepad.id().is_some() { dbg!( gamepad.id() ); } //for debug
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -66,47 +124,34 @@ pub fn toggle_window_mode
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//デフォルトカメラのComponent
-#[derive( Component )] pub struct CameraDefault2d;
-#[derive( Component )] pub struct CameraDefault3d;
+//操作を受付けるgamepadを切り替える
+pub fn change_gamepad_connection
+(   opt_gamepad: Option<ResMut<TargetGamepad>>,
+    gamepads: Res<Gamepads>,
+)
+{   let Some ( mut gamepad ) = opt_gamepad else { return };
 
-//デフォルト2Dカメラをspawnする
-pub fn spawn_camera_2d( mut cmds: Commands )
-{   cmds.spawn( ( Camera2dBundle::default(), CameraDefault2d ) )
-    .insert( Camera
-    {   order: CAMERA_ORDER_DEFAULT_2D,
-        clear_color: CAMERA_BGCOLOR_2D,
-        ..default()
-    } )
-    .insert( Transform::from_translation( CAMERA_POSITION_DEFAULT_2D ) )
-    ;
-}
+    //IDが保存されている場合
+    if let Some ( id ) = gamepad.id()
+    {   //該当gamepadが接続中なら
+        if gamepads.contains( id ) { return }
 
-//デフォルト3Dカメラをspawnする
-pub fn spawn_camera_3d( mut cmds: Commands )
-{   //3Dカメラの座標を初期化する（オービットカメラ）
-    let vec3 = Orbit::default().to_vec3();
+        //gamepadが接続されていない（＝全部外された）
+        if gamepads.iter().count() == 0
+        {   *gamepad.id_mut() = None;
 
-    cmds.spawn( ( Camera3dBundle:: default(), CameraDefault3d ) )
-    .insert( Camera
-    {   order: CAMERA_ORDER_DEFAULT_3D,
-        clear_color: CAMERA_BGCOLOR_3D,
-        ..default()
-    } )
-    .insert( Transform::from_translation( vec3 ).looking_at( Vec3::ZERO, Vec3::Y ) )
-    ;
-}
+            #[cfg( debug_assertions )]
+            dbg!( gamepad.id() ); //for debug
 
-//3D lightをspawnする
-pub fn spawn_3d_light( mut cmds: Commands )
-{   let illuminance = LIGHT_3D_BRIGHTNESS;
-    let shadows_enabled = true;
-    let transform = Transform::from_translation( LIGHT_3D_TRANSLATION );
+            return;
+        }
+    }
 
-    cmds.spawn( DirectionalLightBundle::default() )
-    .insert( DirectionalLight { illuminance, shadows_enabled, ..default() } )
-    .insert( transform.looking_at( Vec3::ZERO, Vec3::Y ) )
-    ;
+    //接続中のものを１つ取り出して切り替える
+    *gamepad.id_mut() = gamepads.iter().next();
+
+    #[cfg( debug_assertions )]
+    if gamepad.id().is_some() { dbg!( gamepad.id() ); } //for debug
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -162,23 +207,6 @@ pub fn hide_component<T: Component>
 (   mut qry: Query<&mut Visibility, With<T>>,
 )
 {   qry.iter_mut().for_each( | mut v | *v = Visibility::Hidden );
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-//bevy::window::close_on_escがv0.14.0で廃止になったため代替
-//  remove close_on_esc #12859
-//  https://github.com/bevyengine/bevy/pull/12859
-pub fn close_on_esc
-(   mut cmds: Commands,
-    windows: Query< ( Entity, &Window ) >,
-    inkey: Res< ButtonInput< KeyCode > >,
-)
-{   for ( id, window ) in windows.iter()
-    {   if window.focused && inkey.just_pressed( KeyCode::Escape )
-        {   cmds.entity( id ).despawn();
-        }
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -2,79 +2,6 @@ use super::*;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//ゲームの状態
-#[derive( Clone, Copy, Eq, PartialEq, Hash, Debug, Default, States, MyState )]
-pub enum MyState
-{   #[default] LoadAssets,
-    InitApp,
-    InitGame,
-    TitleDemo, DemoLoop,
-    StageStart, MainLoop, StageClear,
-    GameOver,
-    Pause,
-}
-
-impl MyState
-{   pub fn is_demoplay( &self ) -> bool { self.is_titledemo() || self.is_demoloop() }
-}
-
-//InitAppの後の遷移先を登録するResource
-#[derive( Resource )]
-pub struct AfterInitApp ( pub MyState );
-impl ChangeMyState for AfterInitApp
-{   fn state( &self ) -> MyState { self.0 }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-//操作を受付けるgamepadのIDを保存するResource
-#[derive( Resource, Default )]
-pub struct TargetGamepad ( Option<Gamepad> );
-
-impl TargetGamepad
-{   pub fn id    ( &    self ) ->      Option<Gamepad> {      self.0 }
-    pub fn id_mut( &mut self ) -> &mut Option<Gamepad> { &mut self.0 }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-//glamのIVec2にメソッドを追加する準備
-pub trait AddOnTraitForIVec2
-{   fn to_vec2_on_screen( &self ) -> Vec2;
-}
-
-//glamのIVec2にメソッドを追加する
-impl AddOnTraitForIVec2 for IVec2
-{   //スプライト用グリッドの座標(IVec2)をスクリーンのピクセル座標(Vec2)へ変換する
-    fn to_vec2_on_screen( &self ) -> Vec2
-    {   //スクリーン座標の基準単位（Ｙ軸はマイナスへ向く）
-        let unit = Vec2::new( 1.0, -1.0 ) * PIXELS_PER_GRID;
-
-        //アンカーが中央にあるため補正(+0.5)を加えてから変換する
-        ( self.as_vec2() + 0.5 ) * unit
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-//glamの型にメソッドを追加する準備
-pub trait AddOnTraitForIVec2_2
-{   fn to_3dxz( &self ) -> Vec3;
-}
-
-//glamの型にメソッドを追加する
-impl AddOnTraitForIVec2_2 for IVec2
-{   //平面座標(IVec2)から3D直交座標(Vec3)へ変換する
-    fn to_3dxz( &self ) -> Vec3
-    {   let     x = self.x as f32;
-        let neg_y = self.y as f32 * -1.0;
-        let     z = 0.0; //xy平面上
-        Vec3::new( x, neg_y, z )
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
 //極座標の型
 #[derive( Clone, Copy )]
 pub struct Orbit
@@ -107,6 +34,87 @@ impl Orbit
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//ゲームの状態
+#[derive( Clone, Copy, Eq, PartialEq, Hash, Debug, Default, States, MyState )]
+pub enum MyState
+{   #[default] LoadAssets,
+    InitApp,
+    InitGame,
+    TitleDemo, DemoLoop,
+    StageStart, MainLoop, StageClear,
+    GameOver,
+    Pause,
+}
+
+impl MyState
+{   pub fn is_demoplay( &self ) -> bool { self.is_titledemo() || self.is_demoloop() }
+}
+
+//InitAppの後の遷移先を登録するResource
+#[derive( Resource )]
+pub struct AfterInitApp ( pub MyState );
+impl ChangeMyState for AfterInitApp
+{   fn state( &self ) -> MyState { self.0 }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//glamのIVec2にメソッドを追加する準備
+pub trait AddOnTraitForIVec2
+{   fn to_vec2_on_screen( &self ) -> Vec2;
+    fn to_3dxz( &self ) -> Vec3;
+}
+
+//glamのIVec2にメソッドを追加する
+impl AddOnTraitForIVec2 for IVec2
+{   //スプライト用グリッドの座標(IVec2)をスクリーンのピクセル座標(Vec2)へ変換する
+    fn to_vec2_on_screen( &self ) -> Vec2
+    {   //スクリーン座標の基準単位（Ｙ軸はマイナスへ向く）
+        let unit = Vec2::new( 1.0, -1.0 ) * PIXELS_PER_GRID;
+
+        //アンカーが中央にあるため補正(+0.5)を加えてから変換する
+        ( self.as_vec2() + 0.5 ) * unit
+    }
+
+    //平面座標(IVec2)から3D直交座標(Vec3)へ変換する
+    fn to_3dxz( &self ) -> Vec3
+    {   let     x = self.x as f32;
+        let neg_y = self.y as f32 * -1.0;
+        let     z = 0.0; //xy平面上
+        Vec3::new( x, neg_y, z )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//基本図形に対する自前の糖衣構文（Bevy 0.13.0 Primitive Shapesへの対応）
+pub struct Cube; //立方体
+impl Cube
+{   pub fn from_size( size: f32 ) -> Cuboid
+    {   Cuboid::from_size( Vec3::splat( size ) )
+    }
+}
+
+pub struct SquarePlane; //3D座標上の平面（正方形）
+impl SquarePlane
+{   pub fn from_size( size: f32 ) -> Mesh
+    {   Plane3d::default().mesh().size( size, size ).build()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//操作を受付けるgamepadのIDを保存するResource
+#[derive( Resource, Default )]
+pub struct TargetGamepad ( Option<Gamepad> );
+
+impl TargetGamepad
+{   pub fn id    ( &    self ) ->      Option<Gamepad> {      self.0 }
+    pub fn id_mut( &mut self ) -> &mut Option<Gamepad> { &mut self.0 }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 //極座標カメラのResource
 #[derive( Resource, Clone, Copy )]
 pub struct OrbitCamera
@@ -134,23 +142,6 @@ pub type MessageSect =
     f32,   //フォントのサイズ
     Color, //フォントの色
 );
-
-////////////////////////////////////////////////////////////////////////////////
-
-//基本図形に対する自前の糖衣構文（Bevy 0.13.0 Primitive Shapesへの対応）
-pub struct Cube; //立方体
-impl Cube
-{   pub fn from_size( size: f32 ) -> Cuboid
-    {   Cuboid::from_size( Vec3::splat( size ) )
-    }
-}
-
-pub struct SquarePlane; //3D座標上の平面（正方形）
-impl SquarePlane
-{   pub fn from_size( size: f32 ) -> Mesh
-    {   Plane3d::default().mesh().size( size, size ).build()
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 

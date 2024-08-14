@@ -3,13 +3,14 @@ use super::*;
 ////////////////////////////////////////////////////////////////////////////////
 
 //アプリの情報
-pub const APP_TITLE: &str = "TigTag3D";     //アプリタイトル
-pub const APP_VER  : &str = CARGO_TOML_VER; //アプリのバージョン
+pub const APP_TITLE : &str = "TigTag3D";     //アプリタイトル
+pub const APP_VER   : &str = CARGO_TOML_VER; //アプリのバージョン
+const CARGO_TOML_VER: &str = env!( "CARGO_PKG_VERSION" );
 
 //単位Gridの縦横(Pixel)
-const BASE_PIXELS: i32 = 8;
-const SCALING: f32 = 4.0;
-pub const PIXELS_PER_GRID: f32 = BASE_PIXELS as f32 * SCALING;
+const BASE_PIXELS : i32 = 8;
+const BASE_SCALING: f32 = 4.0;
+pub const PIXELS_PER_GRID: f32 = BASE_PIXELS as f32 * BASE_SCALING;
 
 //ウィンドウ縦横(Grid)
 pub const SCREEN_GRIDS_WIDTH : i32 = 43; //memo: 25 best 43
@@ -31,16 +32,12 @@ pub static MAIN_WINDOW: LazyLock<Option<Window>> = LazyLock::new
                 maximize: false,
                 close   : true,
             },
+            // fit_canvas_to_parent: true, //v0.13で廃止(#11057)、v0.14で復活(#11278)
             ..default()
         };
         Some ( window )
     }
 );
-
-//Gridに関連する定数
-pub const GRID_CUSTOM_SIZE: Vec2 = Vec2::new( PIXELS_PER_GRID, PIXELS_PER_GRID );
-pub const GRIDS_X_RANGE: Range<i32> = 0..SCREEN_GRIDS_WIDTH;
-pub const GRIDS_Y_RANGE: Range<i32> = 0..SCREEN_GRIDS_HEIGHT;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -113,15 +110,6 @@ const ER_BAD_SCREEN_DESIGN: &str = "Frame design unmatch width/height parameters
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//フルスクリーンのキー
-pub const FULL_SCREEN_KEY: KeyCode = KeyCode::Enter;
-pub const FULL_SCREEN_KEY_MODIFIER: &[ KeyCode ] = &[ KeyCode::AltRight, KeyCode::AltLeft ];
-
-//フルスクリーンのゲームパッドボタン
-pub const FULL_SCREEN_BUTTON: GamepadButtonType = GamepadButtonType::Start; //ps4[OPTIONS]
-
-////////////////////////////////////////////////////////////////////////////////
-
 //カメラのレンダリングの重なり
 pub const CAMERA_ORDER_DEFAULT_2D: isize = 2; //2D デフォルトカメラ
 //============================================================================
@@ -130,17 +118,15 @@ pub const CAMERA_ORDER_MINIMAP_2D: isize = 1; //2D ミニマップ用カメラ
 pub const CAMERA_ORDER_DEFAULT_3D: isize = 0; //3D デフォルトカメラが最下
 
 //カメラの背景色
-pub const CAMERA_BGCOLOR_2D: ClearColorConfig = CAMERA_BG_THROUGH;
-pub const CAMERA_BGCOLOR_3D: ClearColorConfig = CAMERA_BG_COLOR;
-
 const CAMERA_BG_THROUGH: ClearColorConfig = ClearColorConfig::None;
 const CAMERA_BG_COLOR  : ClearColorConfig = ClearColorConfig::Custom( Color::BLACK );
+
+pub const CAMERA_BGCOLOR_2D: ClearColorConfig = CAMERA_BG_THROUGH;
+pub const CAMERA_BGCOLOR_3D: ClearColorConfig = CAMERA_BG_COLOR;
 
 //3Dライトの設定
 pub const LIGHT_3D_BRIGHTNESS : f32  = 3000.0; //明るさ
 pub const LIGHT_3D_TRANSLATION: Vec3 = Vec3::new( -100.0, 300.0, 300.0 ); //位置
-
-////////////////////////////////////////////////////////////////////////////////
 
 //デフォルト2Dカメラの位置
 //第四象限。左上隅が(0,0)で、X軸はプラス方向へ、Y軸はマイナス方向へ伸びる
@@ -149,8 +135,6 @@ pub const CAMERA_POSITION_DEFAULT_2D: Vec3 = Vec3::new
     SCREEN_PIXELS_HEIGHT * -0.5,
     0.0
 );
-
-////////////////////////////////////////////////////////////////////////////////
 
 //極座標カメラの設定
 pub const CAMERA_ORBIT_INIT_R    : f32 = 21.9;      //初期値
@@ -164,55 +148,64 @@ pub const CAMERA_ORBIT_MIN_THETA: f32 = PI * 0.51; //Θの最小値(ラジアン
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//Gridに関連する定数
+pub const GRID_CUSTOM_SIZE: Vec2 = Vec2::new( PIXELS_PER_GRID, PIXELS_PER_GRID );
+pub const GRIDS_X_RANGE: Range<i32> = 0..SCREEN_GRIDS_WIDTH;
+pub const GRIDS_Y_RANGE: Range<i32> = 0..SCREEN_GRIDS_HEIGHT;
+
+////////////////////////////////////////////////////////////////////////////////
+
 //スプライト重なり
 pub const DEPTH_SPRITE_DEBUG_GRID : f32 = 999.0; //重なりの最大値
 pub const DEPTH_SPRITE_LOADING_MSG: f32 = 950.0; //Now Loadingアニメのスプライト
 pub const DEPTH_SPRITE_KANI_DOTOWN: f32 = 900.0; //フッターの蟹アイコン
-//============================================================================
+//==============================================================================
 pub const DEPTH_SPRITE_GAME_FRAME : f32 = 800.0; //ゲームの枠のスプライト
-//============================================================================
 pub const DEPTH_SPRITE_CHASER     : f32 = 700.0; //ゲームの敵機スプライト
 pub const DEPTH_SPRITE_PLAYER     : f32 = 600.0; //ゲームの自機スプライト
 pub const DEPTH_SPRITE_DOT        : f32 = 500.0; //ゲームのドットスプライト
 pub const DEPTH_SPRITE_BRICK_WALL : f32 = 400.0; //ゲームの壁スプライト
+//==============================================================================
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //assetsのパスのつじつま合わせ
-#[cfg( target_arch = "wasm32" )]
-macro_rules! ASSETS_PATH { () => ( "" ) }
-
-#[cfg( not( target_arch = "wasm32" ) )]
-macro_rules! ASSETS_PATH { () => ( "../../../assets/" ) }
+macro_rules! ASSETS_PATH
+{   ( $e:expr ) =>
+    (   if ( cfg!( target_arch = "wasm32" ) ) { $e } else { concat!( "../../../assets/", $e ) }
+    )
+}
 
 //assets（スプライト）
-pub const ASSETS_SPRITE_KANI_DOTOWN: &str = concat!( ASSETS_PATH!(), "image/sprite/kani_DOTOWN.png" );
-//=========================================================================
-pub const ASSETS_SPRITE_BRICK_WALL : &str = concat!( ASSETS_PATH!(), "image/sprite/brick_wall.png" );
+pub const ASSETS_SPRITE_KANI_DOTOWN: &str = ASSETS_PATH!( "image/sprite/kani_DOTOWN.png" );
+pub const ASSETS_SPRITE_BRICK_WALL : &str = ASSETS_PATH!( "image/sprite/brick_wall.png"  );
 
+//==============================================================================
 //assets（スプライトシート）
-pub const ASSETS_SPRITE_SHEET_PLAYER      : &str = concat!( ASSETS_PATH!(), "image/sprite_sheet/player.png" );
-pub const ASSETS_SPRITE_SHEET_CHASER_RED  : &str = concat!( ASSETS_PATH!(), "image/sprite_sheet/chaser_red.png" );
-pub const ASSETS_SPRITE_SHEET_CHASER_GREEN: &str = concat!( ASSETS_PATH!(), "image/sprite_sheet/chaser_green.png" );
-pub const ASSETS_SPRITE_SHEET_CHASER_BLUE : &str = concat!( ASSETS_PATH!(), "image/sprite_sheet/chaser_blue.png" );
-pub const ASSETS_SPRITE_SHEET_CHASER_PINK : &str = concat!( ASSETS_PATH!(), "image/sprite_sheet/chaser_pink.png" );
+pub const ASSETS_SPRITE_SHEET_PLAYER      : &str = ASSETS_PATH!( "image/sprite_sheet/player.png"       );
+pub const ASSETS_SPRITE_SHEET_CHASER_RED  : &str = ASSETS_PATH!( "image/sprite_sheet/chaser_red.png"   );
+pub const ASSETS_SPRITE_SHEET_CHASER_GREEN: &str = ASSETS_PATH!( "image/sprite_sheet/chaser_green.png" );
+pub const ASSETS_SPRITE_SHEET_CHASER_BLUE : &str = ASSETS_PATH!( "image/sprite_sheet/chaser_blue.png"  );
+pub const ASSETS_SPRITE_SHEET_CHASER_PINK : &str = ASSETS_PATH!( "image/sprite_sheet/chaser_pink.png"  );
+//==============================================================================
 
 //assets（フォント）
-pub const ASSETS_FONT_ORBITRON_BLACK      : &str = concat!( ASSETS_PATH!(), "font/Orbitron-Black.ttf" );
-pub const ASSETS_FONT_PRESSSTART2P_REGULAR: &str = concat!( ASSETS_PATH!(), "font/PressStart2P-Regular.ttf" );
-//=================================================================================
-pub const ASSETS_FONT_REGGAEONE_REGULAR   : &str = concat!( ASSETS_PATH!(), "font/ReggaeOne-Regular.ttf" );
+pub const ASSETS_FONT_ORBITRON_BLACK      : &str = ASSETS_PATH!( "font/Orbitron-Black.ttf"       );
+pub const ASSETS_FONT_PRESSSTART2P_REGULAR: &str = ASSETS_PATH!( "font/PressStart2P-Regular.ttf" );
+//==============================================================================
+pub const ASSETS_FONT_REGGAEONE_REGULAR   : &str = ASSETS_PATH!( "font/ReggaeOne-Regular.ttf"    );
 
 //assets（サウンド）
-pub const ASSETS_SOUND_BEEP: &str = concat!( ASSETS_PATH!(), "audio/sound/beep.ogg" );
+pub const ASSETS_SOUND_BEEP: &str = ASSETS_PATH!( "audio/sound/beep.ogg" );
+//==============================================================================
 
 //事前ロード対象
 pub const PRELOAD_ASSETS: &[ &str ] =
 &[  ASSETS_SPRITE_KANI_DOTOWN,
+    ASSETS_SPRITE_BRICK_WALL,
     ASSETS_FONT_ORBITRON_BLACK,
     ASSETS_FONT_PRESSSTART2P_REGULAR,
-  //=================================
-    ASSETS_SPRITE_BRICK_WALL,
+    //=================================
     ASSETS_SPRITE_SHEET_PLAYER,
     ASSETS_SPRITE_SHEET_CHASER_RED,
     ASSETS_SPRITE_SHEET_CHASER_GREEN,
@@ -220,7 +213,17 @@ pub const PRELOAD_ASSETS: &[ &str ] =
     ASSETS_SPRITE_SHEET_CHASER_PINK,
     ASSETS_FONT_REGGAEONE_REGULAR,
     ASSETS_SOUND_BEEP,
+    //=================================
 ];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//フルスクリーンのキー
+pub const FULL_SCREEN_KEY: KeyCode = KeyCode::Enter;
+pub const FULL_SCREEN_KEY_MODIFIER: &[ KeyCode ] = &[ KeyCode::AltRight, KeyCode::AltLeft ];
+
+//フルスクリーンのゲームパッドボタン
+pub const FULL_SCREEN_BUTTON: GamepadButtonType = GamepadButtonType::Start; //ps4[OPTIONS]
 
 ////////////////////////////////////////////////////////////////////////////////
 

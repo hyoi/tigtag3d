@@ -42,7 +42,7 @@ const TEXT_HEADER_LEFT: &[ MessageSect ] =
 &[  ( " STAGE ", ASSETS_FONT_ORBITRON_BLACK      , PIXELS_PER_GRID * 0.7, Color::GOLD  ),
     ( NA2      , ASSETS_FONT_PRESSSTART2P_REGULAR, PIXELS_PER_GRID * 0.7, Color::WHITE ),
 ];
-static PLACE_HOLDER_HEADER_LEFT: Lazy<Option<usize>> = Lazy::new
+static PLACE_HOLDER_HEADER_LEFT: LazyLock<Option<usize>> = LazyLock::new
 (   || TEXT_HEADER_LEFT.iter().position( |x| PLACE_HOLDERS_HEAD_FOOT.contains( &x.0 ) )
 );
 
@@ -50,7 +50,7 @@ const TEXT_HEADER_CENTER: &[ MessageSect ] =
 &[  ( " SCORE ", ASSETS_FONT_ORBITRON_BLACK      , PIXELS_PER_GRID * 0.7, Color::GOLD  ),
     ( NA5      , ASSETS_FONT_PRESSSTART2P_REGULAR, PIXELS_PER_GRID * 0.7, Color::WHITE ),
 ];
-static PLACE_HOLDER_HEADER_CENTER: Lazy<Option<usize>> = Lazy::new
+static PLACE_HOLDER_HEADER_CENTER: LazyLock<Option<usize>> = LazyLock::new
 (   || TEXT_HEADER_CENTER.iter().position( |x| PLACE_HOLDERS_HEAD_FOOT.contains( &x.0 ) )
 );
 
@@ -58,7 +58,7 @@ const TEXT_HEADER_RIGHT: &[ MessageSect ] =
 &[  ( " Hi-SCORE ", ASSETS_FONT_ORBITRON_BLACK      , PIXELS_PER_GRID * 0.7, Color::GOLD  ),
     ( NA5         , ASSETS_FONT_PRESSSTART2P_REGULAR, PIXELS_PER_GRID * 0.7, Color::WHITE ),
 ];
-static PLACE_HOLDER_HEADER_RIGHT: Lazy<Option<usize>> = Lazy::new
+static PLACE_HOLDER_HEADER_RIGHT: LazyLock<Option<usize>> = LazyLock::new
 (   || TEXT_HEADER_RIGHT.iter().position( |x| PLACE_HOLDERS_HEAD_FOOT.contains( &x.0 ) )
 );
 

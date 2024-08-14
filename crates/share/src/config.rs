@@ -20,7 +20,7 @@ pub const SCREEN_PIXELS_WIDTH : f32 = PIXELS_PER_GRID * SCREEN_GRIDS_WIDTH  as f
 pub const SCREEN_PIXELS_HEIGHT: f32 = PIXELS_PER_GRID * SCREEN_GRIDS_HEIGHT as f32;
 
 //ウィンドウの定義
-pub static MAIN_WINDOW: Lazy<Option<Window>> = Lazy::new
+pub static MAIN_WINDOW: LazyLock<Option<Window>> = LazyLock::new
 (   ||
     {   let window = Window
         {   title: format!( "{APP_TITLE} v{APP_VER}" ),
@@ -57,7 +57,7 @@ pub const SCREEN_FRAME_LABEL_REGEX: &str = r"[a-zA-Z0-9\.]+";
 pub const VIEWPORT_MINIMAP_ORIGIN: IVec2 = IVec2::new( 33, 13 );
 pub const VIEWPORT_MINIMAP_SIZE  : IVec2 = IVec2::new(  9,  9 );
 
-pub static SCREEN_FRAME: Lazy<ScreenFrame> = Lazy::new
+pub static SCREEN_FRAME: LazyLock<ScreenFrame> = LazyLock::new
 (   ||
     {   let design = vec!
         [  //0123456789_123456789_123456789_123456789_12

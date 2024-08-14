@@ -12,7 +12,9 @@ use std::f32::consts::PI;
 
 //import names from other crates in this package
 use template::*;
-use tigtag_inside::prelude as tigtag;
+
+//tigtagの識別子を輸入する
+use super::tigtag_inside::prelude as tigtag;
 
 //マップ、自機、追手の処理
 mod map;

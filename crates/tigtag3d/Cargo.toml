@@ -7,5 +7,7 @@ edition.workspace = true
 
 [dependencies]
 bevy.workspace = true
+rand.workspace = true
+regex.workspace = true
 
 template.workspace = true

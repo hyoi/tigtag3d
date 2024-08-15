@@ -11,3 +11,6 @@ rand.workspace = true
 regex.workspace = true
 
 template.workspace = true
+
+[features]
+sprite_off = [] # cargo run --features sprite_off

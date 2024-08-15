@@ -1,25 +1,6 @@
-//external crates
-use bevy::
-{   prelude::*,
-    input::keyboard::NativeKeyCode,
-    sprite::MaterialMesh2dBundle,
-    utils::{ HashMap, HashSet },
-    audio::Volume,
-};
-use rand::prelude::*;
+use super::*;
 
-//standard library
-use std::
-{   sync::LazyLock,
-    ops::Range,
-    f32::consts::{ PI, TAU },
-    ops::{ Add, AddAssign },
-    cmp::Ordering,
-    collections::VecDeque,
-};
-
-//import names from other crates in this package
-use template::*;
+////////////////////////////////////////////////////////////////////////////////
 
 //ゲームロジック
 mod schedule;
@@ -50,5 +31,7 @@ mod demo;
 
 //名前の輸出用prelude
 pub mod prelude;
+
+////////////////////////////////////////////////////////////////////////////////
 
 //End of code.

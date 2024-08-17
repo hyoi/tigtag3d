@@ -41,6 +41,15 @@ mod tigtag3d_inside;
 
 ////////////////////////////////////////////////////////////////////////////////
 
+//アプリの情報
+pub const APP_TITLE: &str = "TigTag3D"; //env!( "CARGO_PKG_NAME" );
+pub const APP_VER  : &str = env!( "CARGO_PKG_VERSION" );
+pub const COPYRIGHT: &str = "hyoi 2024 - XXXX";
+
+//ウィンドウ縦横(Grid)
+pub const SCREEN_GRIDS_WIDTH : i32 = 43; //memo: 25 best 43
+pub const SCREEN_GRIDS_HEIGHT: i32 = 24; //memo: 19 best 24
+
 //コンパイル オプションの定数
 pub const SPRITE_OFF: fn() -> bool = || cfg!( feature = "sprite_off" );
 

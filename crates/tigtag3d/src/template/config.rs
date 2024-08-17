@@ -2,19 +2,10 @@ use super::*;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//アプリの情報
-pub const APP_TITLE : &str = "TigTag3D";     //アプリタイトル
-pub const APP_VER   : &str = CARGO_TOML_VER; //アプリのバージョン
-const CARGO_TOML_VER: &str = env!( "CARGO_PKG_VERSION" );
-
 //単位Gridの縦横(Pixel)
 const BASE_PIXELS : i32 = 8;
 const BASE_SCALING: f32 = 4.0;
 pub const PIXELS_PER_GRID: f32 = BASE_PIXELS as f32 * BASE_SCALING;
-
-//ウィンドウ縦横(Grid)
-pub const SCREEN_GRIDS_WIDTH : i32 = 43; //memo: 25 best 43
-pub const SCREEN_GRIDS_HEIGHT: i32 = 24; //memo: 19 best 24
 
 //ウィンドウ縦横(Pixel)
 pub const SCREEN_PIXELS_WIDTH : f32 = PIXELS_PER_GRID * SCREEN_GRIDS_WIDTH  as f32;
@@ -126,7 +117,9 @@ pub const CAMERA_BGCOLOR_3D: ClearColorConfig = CAMERA_BG_COLOR;
 
 //3Dライトの設定
 pub const LIGHT_3D_BRIGHTNESS : f32  = 3000.0; //明るさ
+//============================================================================
 pub const LIGHT_3D_TRANSLATION: Vec3 = Vec3::new( -100.0, 300.0, 300.0 ); //位置
+//============================================================================
 
 //デフォルト2Dカメラの位置
 //第四象限。左上隅が(0,0)で、X軸はプラス方向へ、Y軸はマイナス方向へ伸びる
@@ -137,9 +130,11 @@ pub const CAMERA_POSITION_DEFAULT_2D: Vec3 = Vec3::new
 );
 
 //極座標カメラの設定
+//============================================================================
 pub const CAMERA_ORBIT_INIT_R    : f32 = 21.9;      //初期値
 pub const CAMERA_ORBIT_INIT_THETA: f32 = PI  * 0.5; //初期値(ラジアン) 1.0:天頂、0.5:真横、0.0:真下
 pub const CAMERA_ORBIT_INIT_PHI  : f32 = TAU * 0.0; //初期値(ラジアン) 6時方向が0.0で反時計回り
+//============================================================================
 
 pub const CAMERA_ORBIT_MAX_R    : f32 = 50.0;      //rの最大値
 pub const CAMERA_ORBIT_MIN_R    : f32 = 1.0;       //rの最小値

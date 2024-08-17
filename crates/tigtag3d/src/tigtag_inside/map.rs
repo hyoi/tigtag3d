@@ -108,15 +108,18 @@ impl Map
 #[derive( Component )] pub struct SpriteDot;
 
 //マップ縦横幅
+//==============================================================================
 pub const MAP_GRIDS_WIDTH : i32 = 25;     // w <= SCREEN_GRIDS_WIDTH;
 pub const MAP_GRIDS_HEIGHT: i32 = 19 - 2; // h <= SCREEN_GRIDS_HEIGHT - 2;
+//==============================================================================
 
 //マップ座標から画面座標へ変換する際の調整値
-// const ADJUST_MAP_ON_SCREEN: IVec2 = IVec2::new( 0, 1 );
+//==============================================================================
 const ADJUST_MAP_ON_SCREEN: IVec2 = IVec2::new
 (   VIEWPORT_MINIMAP_SIZE.x + SCREEN_GRIDS_WIDTH,
     VIEWPORT_MINIMAP_SIZE.y + 1
 );
+//==============================================================================
 
 //マップのレンジ（外壁含む）
 pub const MAP_GRIDS_X_RANGE: Range<i32> = 0..MAP_GRIDS_WIDTH;

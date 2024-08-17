@@ -8,9 +8,10 @@ edition.workspace = true
 [dependencies]
 bevy.workspace = true
 rand.workspace = true
+chrono.workspace = true
 regex.workspace = true
 
-template.workspace = true
+macros.workspace = true
 
 [[bin]]
 name = "tigtag3d"
@@ -23,7 +24,6 @@ sprite_off = [] # cargo run --features sprite_off
 
 [workspace]
 resolver = "2"
-#members = [ "crates/tigtag3d" ]
 
 [workspace.package]
 version = "0.3.0"
@@ -39,9 +39,6 @@ syn = "2.0"
 quote = "1.0"
 proc-macro2 = "1.0"
 
-tigtag3d_inside = { path = "crates/tigtag3d_inside" }
-tigtag_inside   = { path = "crates/tigtag_inside"   }
-template        = { path = "crates/template"        }
 macros          = { path = "crates/macros"          }
 macros_inside   = { path = "crates/macros_inside"   }
 

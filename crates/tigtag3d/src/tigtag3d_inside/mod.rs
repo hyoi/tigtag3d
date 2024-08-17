@@ -1,17 +1,6 @@
-//external crates
-use bevy::
-{   prelude::*,
-    utils::{ HashMap, HashSet },
-    sprite::Anchor,
-    render::camera::Viewport,
-};
-use regex::Regex;
+use super::*;
 
-//standard library
-use std::f32::consts::PI;
-
-//import names from other crates in this package
-use template::*;
+////////////////////////////////////////////////////////////////////////////////
 
 //tigtagの識別子を輸入する
 use super::tigtag_inside::prelude as tigtag;
@@ -20,8 +9,6 @@ use super::tigtag_inside::prelude as tigtag;
 mod map;
 mod player;
 mod chasers;
-
-////////////////////////////////////////////////////////////////////////////////
 
 //プラグインの設定
 pub struct Schedule;

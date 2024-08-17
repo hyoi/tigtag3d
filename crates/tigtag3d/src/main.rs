@@ -1,27 +1,41 @@
 //external crates
 use bevy::
 {   prelude::*,
+    log::LogPlugin,
+    color::palettes::css,
+    window::WindowMode,
+    input::mouse::{ MouseMotion, MouseWheel },
+    ecs::query::QueryFilter,
+    asset::{ LoadState, LoadedUntypedAsset },
+    diagnostic::{ FrameTimeDiagnosticsPlugin, DiagnosticsStore },
+    utils::Duration,
     input::keyboard::NativeKeyCode,
-    sprite::MaterialMesh2dBundle,
+    sprite::{ MaterialMesh2dBundle, Anchor },
     utils::{ HashMap, HashSet },
     audio::Volume,
+    render::camera::Viewport,
 };
 use rand::prelude::*;
+use chrono::prelude::Local as time_local; //「Local」がbevyとバッティングするのでaliasを使う
+use regex::Regex;
 
 //standard library
 use std::
 {   sync::LazyLock,
-    ops::Range,
     f32::consts::{ PI, TAU },
-    ops::{ Add, AddAssign },
+    ops::{ Range, Add, AddAssign },
     cmp::Ordering,
     collections::VecDeque,
 };
 
-//other crates in this package
-use template::*;
+//proc-macro crates
+use macros::MyState;
 
 //internal submodules
+mod template;
+use template::*;
+
+//ゲームロジック
 mod tigtag_inside;
 mod tigtag3d_inside;
 

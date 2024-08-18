@@ -7,6 +7,8 @@ edition.workspace = true
 
 [dependencies]
 bevy.workspace = true
+bevy_dev_tools.workspace = true
+
 rand.workspace = true
 chrono.workspace = true
 regex.workspace = true
@@ -31,16 +33,18 @@ edition = "2021"
 
 [workspace.dependencies]
 bevy = "0.14"
+bevy_dev_tools = "0.14"
+
 rand = "0.8"
 chrono = "0.4"
 regex = "1.10"
 
+macros          = { path = "crates/macros"          }
+macros_inside   = { path = "crates/macros_inside"   }
+
 syn = "2.0"
 quote = "1.0"
 proc-macro2 = "1.0"
-
-macros          = { path = "crates/macros"          }
-macros_inside   = { path = "crates/macros_inside"   }
 
 #bevy = { git = "https://github.com/bevyengine/bevy" } #Master branch
 #bevy = { git = "https://github.com/bevyengine/bevy", branch = "release-0.14.0" }

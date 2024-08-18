@@ -15,6 +15,8 @@ use bevy::
     audio::Volume,
     render::camera::Viewport,
 };
+use bevy_dev_tools::ui_debug_overlay; //UI Node Outline Gizmos
+
 use rand::prelude::*;
 use chrono::prelude::Local as time_local; //「Local」がbevyとバッティングするのでaliasを使う
 use regex::Regex;

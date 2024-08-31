@@ -4,18 +4,18 @@ use bevy::
     log::LogPlugin,
     color::palettes::css,
     window::WindowMode,
+    render::camera::Viewport,
     input::mouse::{ MouseMotion, MouseWheel },
     ecs::query::QueryFilter,
     asset::{ LoadState, LoadedUntypedAsset },
     diagnostic::{ FrameTimeDiagnosticsPlugin, DiagnosticsStore },
     utils::Duration,
+    dev_tools::ui_debug_overlay,
     input::keyboard::NativeKeyCode,
     sprite::{ MaterialMesh2dBundle, Anchor },
     utils::{ HashMap, HashSet },
     audio::Volume,
-    render::camera::Viewport,
 };
-use bevy_dev_tools::ui_debug_overlay; //UI Node Outline Gizmos
 
 use rand::prelude::*;
 use chrono::prelude::Local as time_local; //「Local」がbevyとバッティングするのでaliasを使う
@@ -53,12 +53,13 @@ pub const SCREEN_GRIDS_WIDTH : i32 = 43; //memo: 25 best 43
 pub const SCREEN_GRIDS_HEIGHT: i32 = 24; //memo: 19 best 24
 
 //コンパイル オプションの定数
-pub const SPRITE_OFF: fn() -> bool = || cfg!( feature = "sprite_off" );
+pub const SPRITE_OFF     : fn() -> bool = || cfg!( feature = "sprite_off"      );
+pub const ATTACH_VIEWPORT: fn() -> bool = || cfg!( feature = "attach_viewport" );
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //メイン関数
-fn main()
+fn main() -> AppExit
 {   //アプリの生成
     let mut app = App::new();
 
@@ -70,7 +71,7 @@ fn main()
     ;
 
     //アプリの実行
-    app.run();
+    app.run()
 }
 
 ////////////////////////////////////////////////////////////////////////////////

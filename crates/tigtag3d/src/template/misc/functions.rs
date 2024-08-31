@@ -8,26 +8,33 @@ use super::*;
 #[derive( Component )] pub struct CameraDefault2d;
 #[derive( Component )] pub struct CameraDefault3d;
 
+//タイトルバーWクリックや最大化ボタンによるウィンドウ最大化、および
+//WASMでCanvasへのfit(最大化)を設定した場合に表示が著しく崩れることがある。
+//それを緩和するためカメラにviewportを設定する場合に使う
+fn gen_viewport() -> Option<Viewport>
+{   match ATTACH_VIEWPORT()
+    {   true =>
+        {   let zero = UVec2::new( 0, 0 );
+            let size = Vec2::new( SCREEN_PIXELS_WIDTH, SCREEN_PIXELS_HEIGHT );
+            Some
+            (   Viewport
+                {   physical_position: zero,
+                    physical_size    : size.as_uvec2(),
+                    ..default()
+                }
+            )
+        }
+        _ => None
+    }
+}
+
 //デフォルト2Dカメラをspawnする
 pub fn spawn_camera_2d( mut cmds: Commands )
-{   //タイトルバーWクリックや最大化ボタンによるウィンドウ最大化、および
-    //WASMでCanvasへのfit(最大化)を設定した場合に表示が著しく崩れることがある。
-    //それを緩和するためカメラにviewportを設定しておく
-    let zero = UVec2::new( 0, 0 );
-    let size = Vec2::new( SCREEN_PIXELS_WIDTH, SCREEN_PIXELS_HEIGHT );
-    let viewport = Some
-    (   bevy::render::camera::Viewport
-        {   physical_position: zero,
-            physical_size    : size.as_uvec2(),
-            ..default()
-        }
-    );
-
-    cmds.spawn( ( Camera2dBundle::default(), CameraDefault2d ) )
+{   cmds.spawn( ( Camera2dBundle::default(), CameraDefault2d ) )
     .insert( Camera
     {   order: CAMERA_ORDER_DEFAULT_2D,
         clear_color: CAMERA_BGCOLOR_2D,
-        viewport,
+        viewport: gen_viewport(),
         ..default()
     } )
     .insert( Transform::from_translation( CAMERA_POSITION_DEFAULT_2D ) )
@@ -36,31 +43,34 @@ pub fn spawn_camera_2d( mut cmds: Commands )
 
 //デフォルト3Dカメラをspawnする
 pub fn spawn_camera_3d( mut cmds: Commands )
-{   //タイトルバーWクリックや最大化ボタンによるウィンドウ最大化、および
-    //WASMでCanvasへのfit(最大化)を設定した場合に表示が著しく崩れることがある。
-    //それを緩和するためカメラにviewportを設定しておく
-    let zero = UVec2::new( 0, 0 );
-    let size = Vec2::new( SCREEN_PIXELS_WIDTH, SCREEN_PIXELS_HEIGHT );
-    let viewport = Some
-    (   bevy::render::camera::Viewport
-        {   physical_position: zero,
-            physical_size    : size.as_uvec2(),
-            ..default()
-        }
-    );
-
-    //3Dカメラの座標を初期化する（オービットカメラ）
+{   //3Dカメラの座標を初期化する（オービットカメラ）
     let vec3 = Orbit::default().to_vec3();
 
     cmds.spawn( ( Camera3dBundle:: default(), CameraDefault3d ) )
     .insert( Camera
     {   order: CAMERA_ORDER_DEFAULT_3D,
         clear_color: CAMERA_BGCOLOR_3D,
-        viewport,
+        viewport: gen_viewport(),
         ..default()
     } )
     .insert( Transform::from_translation( vec3 ).looking_at( Vec3::ZERO, Vec3::Y ) )
     ;
+}
+
+//UIを描画するCameraのEntity IDをResourceに保存する
+pub fn insert_res_ui_render_camera_id
+(   camera2d_entity: Query<Entity, With<misc::CameraDefault2d>>,
+    camera3d_entity: Query<Entity, With<misc::CameraDefault3d>>,
+    mut cmds: Commands,
+)
+{   //カメラのEntity IDを決定する(優先:Camera2dDefault)
+    #[allow(clippy::suspicious_else_formatting)]
+    let ui_camera_id =
+        if let Ok ( id ) = camera2d_entity.get_single() { id } else
+        if let Ok ( id ) = camera3d_entity.get_single() { id } else { return };
+
+    //Resourceを登録する
+    cmds.insert_resource( UiRenderCamera ( ui_camera_id ) );
 }
 
 //3D lightをspawnする

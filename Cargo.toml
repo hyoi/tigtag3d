@@ -7,7 +7,6 @@ edition.workspace = true
 
 [dependencies]
 bevy.workspace = true
-bevy_dev_tools.workspace = true
 
 rand.workspace = true
 chrono.workspace = true
@@ -20,7 +19,28 @@ name = "tigtag3d"
 path = "crates/tigtag3d/src/main.rs"
 
 [features]
-sprite_off = [] # cargo run --features sprite_off
+sprite_off = [] #スプライト画像の代わりにプリミティブシェイプを表示する
+attach_viewport = [] #viewportをcameraに設定する
+
+[profile.release-wasm]
+inherits = "release"
+opt-level = "s"
+debug = "none"
+#split-debuginfo = "packed" #platform-specific
+strip = "symbols"
+#lto = true #モバイルブラウザで表示されない不具合の対策
+codegen-units = 1
+panic = "abort"
+
+[profile.dev-wasm]
+inherits = "dev"
+opt-level = "s"
+debug = "none"
+#split-debuginfo = "packed" #platform-specific
+strip = "symbols"
+#lto = true #モバイルブラウザで表示されない不具合の対策
+codegen-units = 1
+panic = "abort"
 
 ################################################################################
 
@@ -32,15 +52,14 @@ version = "0.3.0"
 edition = "2021"
 
 [workspace.dependencies]
-bevy = "0.14"
-bevy_dev_tools = "0.14"
+bevy = { version = "0.14", features = [ "bevy_dev_tools" ] }
 
 rand = "0.8"
 chrono = "0.4"
 regex = "1.10"
 
-macros          = { path = "crates/macros"          }
-macros_inside   = { path = "crates/macros_inside"   }
+macros        = { path = "crates/macros"        }
+macros_inside = { path = "crates/macros_inside" }
 
 syn = "2.0"
 quote = "1.0"

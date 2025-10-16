@@ -1,4 +1,7 @@
 /target
+/backup
+/.idea
 
+Todo.md
 Cargo.lock
 *.bak

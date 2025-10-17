@@ -1,49 +1,58 @@
 // external crates
 use bevy::{
     prelude::*,
-    // log::LogPlugin,
-    // color::palettes::css,
-    // window::WindowMode,
-    // render::camera::Viewport,
-    // input::mouse::{ MouseMotion, MouseWheel },
+    ecs::{error::warn, system::SystemParam /*, component::Mutable*/},
+    log::LogPlugin,
+    diagnostic::{FrameTimeDiagnosticsPlugin /*, DiagnosticsStore*/},
+    window::{EnabledButtons, WindowMode},
+    input::{
+        // keyboard::NativeKeyCode,
+        gamepad::GamepadInput,
+        mouse::{MouseMotion, MouseWheel},
+    },
+    asset::{LoadedUntypedAsset, LoadState},
+    color::palettes::css,
+    // audio::Volume,
+    // camera::Viewport,
     // ecs::query::QueryFilter,
-    // asset::{ LoadState, LoadedUntypedAsset },
-    // diagnostic::{ FrameTimeDiagnosticsPlugin, DiagnosticsStore },
     // utils::Duration,
     // dev_tools::ui_debug_overlay,
-    // input::keyboard::NativeKeyCode,
     // sprite::{ MaterialMesh2dBundle, Anchor },
     // utils::{ HashMap, HashSet },
-    // audio::Volume,
 };
 
-// use rand::prelude::*;
+use rustc_hash::{FxHashSet, FxHashMap};
+use rand::prelude::*;
 // use chrono::prelude::Local as time_local; //「Local」がbevyとバッティングするのでaliasを使う
 // use regex::Regex;
 
 // standard library
-// use std::
-// {
-//     // sync::LazyLock,
-//     // f32::consts::{ PI, TAU },
-//     // ops::{ Range, Add, AddAssign },
-//     // cmp::Ordering,
-//     // collections::VecDeque,
-// };
+use std::
+{
+    slice::Iter,
+    ops::{ Range /*, Deref, DerefMut, Add, AddAssign*/},
+    f32::consts::{ PI, TAU },
+    // sync::LazyLock,
+    // cmp::Ordering,
+    // collections::VecDeque,
+};
 
 // internal submodules
-// mod core_logic; // ゲームロジック
+mod core_logic; // ゲームロジック
 
-// mod my_utils; // 共通ライブラリ
-// use my_utils::prelude::*;
+mod my_utils; // 共通ライブラリ
+use my_utils::prelude::*;
 
-// mod config; // 設定各種
-// use config::*;
+mod config; // 設定各種
+use config::*;
 
 // mod demo_play; // demoロジック
 
 // proc-macro
-// use macros::MyState;
+use macros::MyState;
+use macros::derive_appctrl_input;
+// use macros::{OverlayMessage, Blinking, CountDown};
+// use macros::{OverlayMenu, ScalingItem};
 
 // mod template;
 // use template::*;
@@ -75,7 +84,8 @@ fn main() -> AppExit
     // アプリの生成
     App::new()
         // メインスケジュール
-        // .add_plugins(core_logic::Schedule)
+        .add_plugins(core_logic::Schedule) //3Dビジュアライザ
+        // .add_plugins(tigtag::Schedule) //tigtagのゲームロジック
         // アプリ実行
         .run()
 }
@@ -87,11 +97,11 @@ fn main() -> AppExit
 //     let mut app = App::new();
 
 //     //メイン処理
-//     // app
-//     // .add_plugins( template::Schedule        ) //アプリの雛型
-//     // .add_plugins( tigtag_inside::Schedule   ) //tigtagのゲームロジック
-//     // .add_plugins( tigtag3d_inside::Schedule ) //3Dビジュアライザ
-//     // ;
+//     app
+//     .add_plugins( template::Schedule        ) //アプリの雛型
+//     .add_plugins( tigtag_inside::Schedule   ) //tigtagのゲームロジック
+//     .add_plugins( tigtag3d_inside::Schedule ) //3Dビジュアライザ
+//     ;
 
 //     //アプリの実行
 //     app.run()

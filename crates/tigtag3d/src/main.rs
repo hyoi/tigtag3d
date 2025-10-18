@@ -3,7 +3,7 @@ use bevy::{
     prelude::*,
     ecs::{error::warn, system::SystemParam, component::Mutable},
     log::LogPlugin,
-    diagnostic::{FrameTimeDiagnosticsPlugin /*, DiagnosticsStore*/},
+    diagnostic::{FrameTimeDiagnosticsPlugin, DiagnosticsStore},
     window::{EnabledButtons, WindowMode},
     input::{
         // keyboard::NativeKeyCode,

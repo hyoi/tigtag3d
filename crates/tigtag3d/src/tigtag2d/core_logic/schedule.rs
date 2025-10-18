@@ -57,20 +57,20 @@ impl Plugin for Schedule
 
         //--------------------------------------------------------------------------
         // 常に実行する処理（Update without MyState）
-        // application
-        //     // ループ処理
-        //     .add_systems(
-        //         Update, // without MyState
-        //         (
-        //             // ヘッダーとフッターの表示情報を更新する
-        //             information::update_header_footer,
-        //             // スプライトアニメーション
-        //             animate_sprites::<player::Player>, // プレイヤー
-        //             animate_sprites::<chaser::Chaser>, // チェイサー
-        //             // スプライト表示OFFの場合のアニメーション
-        //             chaser::rotate_chaser_shape.run_if(SPRITE_OFF), // チェイサー回転
-        //         ),
-        //     );
+        application
+            // ループ処理
+            .add_systems(
+                Update, // without MyState
+                (
+                    // ヘッダーとフッターの表示情報を更新する
+                    information::update_header_footer,
+                    // スプライトアニメーション
+                    // animate_sprites::<player::Player>, // プレイヤー
+                    // animate_sprites::<chaser::Chaser>, // チェイサー
+                    // スプライト表示OFFの場合のアニメーション
+                    // chaser::rotate_chaser_shape.run_if(SPRITE_OFF), // チェイサー回転
+                ),
+            );
 
         //--------------------------------------------------------------------------
         // タイトル画面の処理（MyState::TitleDemo）

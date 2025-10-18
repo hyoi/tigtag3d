@@ -407,6 +407,14 @@ pub const GAMEPAD_MAP: handle_input::ConnfigGamepad = &[
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// アジャスタ（マップ座標から画面座標への変換調整値）
+pub const ADJUST_MAP_ON_SCREEN: IVec2 = IVec2::new
+(   VIEWPORT_MINIMAP_SIZE.x + SCREEN_GRIDS_WIDTH,
+    VIEWPORT_MINIMAP_SIZE.y + 1
+);
+
+////////////////////////////////////////////////////////////////////////////////
+
 //カメラのレンダリングの重なり
 // pub const CAMERA_ORDER_DEFAULT_2D: isize = 2; //2D デフォルトカメラ
 //============================================================================

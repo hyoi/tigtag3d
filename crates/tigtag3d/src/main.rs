@@ -11,7 +11,7 @@ use bevy::{
         mouse::{MouseMotion, MouseWheel},
     },
     asset::{LoadedUntypedAsset, LoadState},
-    color::palettes::css,
+    color::palettes::*,
     camera::Viewport,
     // audio::Volume,
     // ecs::query::QueryFilter,

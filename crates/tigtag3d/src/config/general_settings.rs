@@ -377,6 +377,36 @@ impl Default for misc::MaskHitAnyKeyInput
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// キーコードとアクションの対応
+#[rustfmt::skip]
+pub const KEYBOARD_MAP: handle_input::ConnfigKeyboard = &[
+    // WASD
+    ( KeyCode::KeyW, handle_input::UserAction::MoveUp    ),
+    ( KeyCode::KeyS, handle_input::UserAction::MoveDown  ),
+    ( KeyCode::KeyA, handle_input::UserAction::MoveLeft  ),
+    ( KeyCode::KeyD, handle_input::UserAction::MoveRight ),
+    // カーソルキー
+    ( KeyCode::ArrowUp   , handle_input::UserAction::MoveUp    ),
+    ( KeyCode::ArrowDown , handle_input::UserAction::MoveDown  ),
+    ( KeyCode::ArrowLeft , handle_input::UserAction::MoveLeft  ),
+    ( KeyCode::ArrowRight, handle_input::UserAction::MoveRight ),
+];
+
+// ゲームパッドのボタン／スティックとアクションの対応
+#[rustfmt::skip]
+pub const GAMEPAD_MAP: handle_input::ConnfigGamepad = &[
+    // 十字ボタン
+    ( GAMEPAD_UP   , handle_input::UserAction::MoveUp    ),
+    ( GAMEPAD_DOWN , handle_input::UserAction::MoveDown  ),
+    ( GAMEPAD_LEFT , handle_input::UserAction::MoveLeft  ),
+    ( GAMEPAD_RIGHT, handle_input::UserAction::MoveRight ),
+    // 左スティック
+    ( GAMEPAD_STICK_LEFT_Y, handle_input::UserAction::AxisVertNormal  ( 1.0 ) ),
+    ( GAMEPAD_STICK_LEFT_X, handle_input::UserAction::AxisHorizNormal ( 1.0 ) ),
+];
+
+////////////////////////////////////////////////////////////////////////////////
+
 //カメラのレンダリングの重なり
 // pub const CAMERA_ORDER_DEFAULT_2D: isize = 2; //2D デフォルトカメラ
 //============================================================================
@@ -389,78 +419,6 @@ impl Default for misc::MaskHitAnyKeyInput
 //============================================================================
 // pub const LIGHT_3D_TRANSLATION: Vec3 = Vec3::new( -100.0, 300.0, 300.0 ); //位置
 //============================================================================
-
-////////////////////////////////////////////////////////////////////////////////
-
-//Gridに関連する定数
-// pub const GRID_CUSTOM_SIZE: Vec2 = Vec2::new( PIXELS_PER_GRID, PIXELS_PER_GRID );
-// pub const GRIDS_X_RANGE: Range<i32> = 0..SCREEN_GRIDS_WIDTH;
-// pub const GRIDS_Y_RANGE: Range<i32> = 0..SCREEN_GRIDS_HEIGHT;
-
-////////////////////////////////////////////////////////////////////////////////
-
-//スプライト重なり
-// pub const DEPTH_SPRITE_DEBUG_GRID : f32 = 999.0; //重なりの最大値
-// pub const DEPTH_SPRITE_LOADING_MSG: f32 = 950.0; //Now Loadingアニメのスプライト
-// pub const DEPTH_SPRITE_KANI_DOTOWN: f32 = 900.0; //フッターの蟹アイコン
-//==============================================================================
-// pub const DEPTH_SPRITE_GAME_FRAME : f32 = 800.0; //ゲームの枠のスプライト
-// pub const DEPTH_SPRITE_CHASER     : f32 = 700.0; //ゲームの敵機スプライト
-// pub const DEPTH_SPRITE_PLAYER     : f32 = 600.0; //ゲームの自機スプライト
-// pub const DEPTH_SPRITE_DOT        : f32 = 500.0; //ゲームのドットスプライト
-// pub const DEPTH_SPRITE_BRICK_WALL : f32 = 400.0; //ゲームの壁スプライト
-//==============================================================================
-
-////////////////////////////////////////////////////////////////////////////////
-
-//assets（スプライト）
-// pub const ASSETS_SPRITE_KANI_DOTOWN: &str = "image/sprite/kani_DOTOWN.png";
-// pub const ASSETS_SPRITE_BRICK_WALL : &str = "image/sprite/brick_wall.png";
-
-//==============================================================================
-//assets（スプライトシート）
-// pub const ASSETS_SPRITE_SHEET_PLAYER      : &str = "image/sprite_sheet/player.png";
-// pub const ASSETS_SPRITE_SHEET_CHASER_RED  : &str = "image/sprite_sheet/chaser_red.png";
-// pub const ASSETS_SPRITE_SHEET_CHASER_GREEN: &str = "image/sprite_sheet/chaser_green.png";
-// pub const ASSETS_SPRITE_SHEET_CHASER_BLUE : &str = "image/sprite_sheet/chaser_blue.png";
-// pub const ASSETS_SPRITE_SHEET_CHASER_PINK : &str = "image/sprite_sheet/chaser_pink.png";
-//==============================================================================
-
-//assets（フォント）
-// pub const ASSETS_FONT_ORBITRON_BLACK      : &str = "font/Orbitron-Black.ttf";
-// pub const ASSETS_FONT_PRESSSTART2P_REGULAR: &str = "font/PressStart2P-Regular.ttf";
-//==============================================================================
-// pub const ASSETS_FONT_REGGAEONE_REGULAR   : &str = "font/ReggaeOne-Regular.ttf";
-
-//assets（サウンド）
-// pub const ASSETS_SOUND_BEEP: &str = "audio/sound/beep.ogg";
-//==============================================================================
-
-//事前ロード対象
-// pub const PRELOAD_ASSETS: &[ &str ] =
-// &[  ASSETS_SPRITE_KANI_DOTOWN,
-//     ASSETS_SPRITE_BRICK_WALL,
-//     ASSETS_FONT_ORBITRON_BLACK,
-//     ASSETS_FONT_PRESSSTART2P_REGULAR,
-//     //=================================
-//     ASSETS_SPRITE_SHEET_PLAYER,
-//     ASSETS_SPRITE_SHEET_CHASER_RED,
-//     ASSETS_SPRITE_SHEET_CHASER_GREEN,
-//     ASSETS_SPRITE_SHEET_CHASER_BLUE,
-//     ASSETS_SPRITE_SHEET_CHASER_PINK,
-//     ASSETS_FONT_REGGAEONE_REGULAR,
-//     ASSETS_SOUND_BEEP,
-//     //=================================
-// ];
-
-////////////////////////////////////////////////////////////////////////////////
-
-//フルスクリーンのキー
-// pub const FULL_SCREEN_KEY: KeyCode = KeyCode::Enter;
-// pub const FULL_SCREEN_KEY_MODIFIER: &[ KeyCode ] = &[ KeyCode::AltRight, KeyCode::AltLeft ];
-
-//フルスクリーンのゲームパッドボタン
-// pub const FULL_SCREEN_BUTTON: GamepadButtonType = GamepadButtonType::Start; //ps4[OPTIONS]
 
 ////////////////////////////////////////////////////////////////////////////////
 

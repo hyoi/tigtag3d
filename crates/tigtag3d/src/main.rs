@@ -46,8 +46,6 @@ use my_utils::prelude::*;
 mod config; // 設定各種
 use config::*;
 
-// mod demo_play; // demoロジック
-
 // proc-macro
 use macros::MyState;
 use macros::derive_appctrl_input;
@@ -67,23 +65,6 @@ fn main() -> AppExit
         // アプリ実行
         .run()
 }
-
-//メイン関数
-// fn main() -> AppExit
-// {
-//     //アプリの生成
-//     let mut app = App::new();
-
-//     //メイン処理
-//     app
-//     .add_plugins( template::Schedule        ) //アプリの雛型
-//     .add_plugins( tigtag_inside::Schedule   ) //tigtagのゲームロジック
-//     .add_plugins( tigtag3d_inside::Schedule ) //3Dビジュアライザ
-//     ;
-
-//     //アプリの実行
-//     app.run()
-// }
 
 ////////////////////////////////////////////////////////////////////////////////
 

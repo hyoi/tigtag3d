@@ -38,7 +38,8 @@ use std::
 };
 
 // internal submodules
-mod core_logic; // ゲームロジック
+mod core_logic; // 3Dビジュアライザ
+mod tigtag2d;   // ゲームロジック
 
 mod my_utils; // 共通ライブラリ
 use my_utils::prelude::*;
@@ -53,13 +54,6 @@ use macros::MyState;
 use macros::derive_appctrl_input;
 // use macros::{OverlayMessage, Blinking, CountDown};
 // use macros::{OverlayMenu, ScalingItem};
-
-// mod template;
-// use template::*;
-
-// ゲームロジック
-// mod tigtag_inside;
-// mod tigtag3d_inside;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -85,7 +79,7 @@ fn main() -> AppExit
     App::new()
         // メインスケジュール
         .add_plugins(core_logic::Schedule) //3Dビジュアライザ
-        // .add_plugins(tigtag::Schedule) //tigtagのゲームロジック
+        .add_plugins(tigtag2d::Schedule)   //tigtagのゲームロジック
         // アプリ実行
         .run()
 }

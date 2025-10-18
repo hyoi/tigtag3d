@@ -74,7 +74,7 @@ pub const SCREEN_GRIDS_HEIGHT: i32 = 24; //memo: 19 best 24
 // アプリの情報
 pub const APP_TITLE: &str = "TigTag3D"; //env!( "CARGO_PKG_NAME" );
 pub const APP_VER: &str = env!("CARGO_PKG_VERSION");
-// pub const COPYRIGHT: &str = "hyoi 2024 - 2025";
+pub const COPYRIGHT: &str = "hyoi 2024 - 2025";
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -102,10 +102,10 @@ impl InitLogPlugin for LogPlugin
 
 // 事前ロード対象
 pub const PRELOAD_ASSETS: &[&str] = &[
-    // ASSETS_FONT_ORBITRON_BLACK,
-    // ASSETS_FONT_PRESSSTART2P_REGULAR,
-    // ASSETS_FONT_REGGAEONE_REGULAR,
-    // ASSETS_SPRITE_KANI_DOTOWN,
+    ASSETS_FONT_ORBITRON_BLACK,
+    ASSETS_FONT_PRESSSTART2P_REGULAR,
+    ASSETS_FONT_REGGAEONE_REGULAR,
+    ASSETS_SPRITE_KANI_DOTOWN,
     // ASSETS_SPRITE_BRICK_WALL,
     // ASSETS_SPRITESHEET_PLAYER,
     // ASSETS_SPRITESHEET_CHASER_RED,
@@ -116,12 +116,12 @@ pub const PRELOAD_ASSETS: &[&str] = &[
 ];
 
 // assets（フォント）
-// pub const ASSETS_FONT_ORBITRON_BLACK: &str = "font/Orbitron-Black.ttf";
-// pub const ASSETS_FONT_PRESSSTART2P_REGULAR: &str = "font/PressStart2P-Regular.ttf";
-// pub const ASSETS_FONT_REGGAEONE_REGULAR: &str = "font/ReggaeOne-Regular.ttf";
+pub const ASSETS_FONT_ORBITRON_BLACK: &str = "font/Orbitron-Black.ttf";
+pub const ASSETS_FONT_PRESSSTART2P_REGULAR: &str = "font/PressStart2P-Regular.ttf";
+pub const ASSETS_FONT_REGGAEONE_REGULAR: &str = "font/ReggaeOne-Regular.ttf";
 
 // assets（スプライト）
-// pub const ASSETS_SPRITE_KANI_DOTOWN: &str = "image/sprite/kani_DOTOWN.png";
+pub const ASSETS_SPRITE_KANI_DOTOWN: &str = "image/sprite/kani_DOTOWN.png";
 // pub const ASSETS_SPRITE_BRICK_WALL: &str = "image/sprite/brick_wall.png";
 
 // assets（スプライトシート）
@@ -134,41 +134,6 @@ pub const PRELOAD_ASSETS: &[&str] = &[
 // assets（サウンド）
 // pub const ASSETS_SOUND_BEEP: &str = "audio/sound/beep.ogg";
 // pub const VOLUME_SOUND_BEEP: Volume = Volume::Linear(0.1); //SEボリューム
-
-////////////////////////////////////////////////////////////////////////////////
-
-// コンパイル オプションの定数
-// pub const ATTACH_VIEWPORT: fn() -> bool = || cfg!(feature = "attach_viewport");
-// pub const SPRITE_OFF: fn() -> bool = || cfg!(feature = "sprite_off");
-
-////////////////////////////////////////////////////////////////////////////////
-
-// おまけ(蟹)
-// pub const SPRITE_KANI_GRID_X: i32 = SCREEN_GRIDS_WIDTH - 4;
-// pub const SPRITE_KANI_GRID_Y: i32 = SCREEN_GRIDS_HEIGHT - 1;
-// pub const SPRITE_KANI_MAGNIFY: f32 = 0.9;
-// pub const SPRITE_KANI_ALPHA: Color = Color::srgba(1.0, 1.0, 1.0, 0.6);
-
-////////////////////////////////////////////////////////////////////////////////
-
-// スプライト重なり
-// pub const DEPTH_SPRITE_KANI_DOTOWN: f32 = 900.0; // フッターの蟹アイコン
-// pub const DEPTH_SPRITE_CHASER: f32 = 700.0; // チェイサーのスプライト
-// pub const DEPTH_SPRITE_PLAYER: f32 = 600.0; // プレイヤーのスプライト
-// pub const DEPTH_SPRITE_DOT: f32 = 500.0; // ドットスプライト
-// pub const DEPTH_SPRITE_BRICK_WALL: f32 = 400.0; // 壁スプライト
-
-////////////////////////////////////////////////////////////////////////////////
-
-// ヘッダー／フッター用の情報
-// pub const HEADER_FOOTER: &[header_footer::TextBlock] = &[
-//     // HEADER_STAGE,      // ステージ数
-//     // HEADER_SCORE,      // スコア
-//     // HEADER_HI_SCORE,   // ハイスコア
-//     // FOOTER_FPS,        // FPS表示
-//     // FOOTER_AUTHER,     // auther
-//     // FOOTER_POWERED_BY, // Powered by
-// ];
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -223,6 +188,75 @@ impl Default for appctrl_input::UiOutlineToggleInput
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+// カメラの情報を格納するResourceの定義
+#[derive(Resource, Deref, DerefMut)]
+pub struct CameraSettings(pub Vec<simple_camera::Setting>);
+
+// カメラのComponent
+#[derive(Component, Clone)]
+pub struct SimpleCamera2d;
+#[derive(Component, Clone)]
+pub struct SimpleCamera3dOrbit;
+
+// 2Dカメラの位置
+// 第四象限を利用する。左上隅が(0,0)で、X軸はプラス方向へ、Y軸はマイナス方向へ伸びる
+pub const CAMERA2D_POSITION: Vec3 = Vec3::new(
+    SCREEN_PIXELS_WIDTH * 0.5,
+    SCREEN_PIXELS_HEIGHT * -0.5,
+    999.0, // 0.0だとスプライトの子のText2dがZ軸1.0(Vec3::Z)で表示されない不具合が発生(v0.14)
+);
+
+// 3Dカメラの位置（球座標）
+pub const CAMERA3D_POSITION_ORBIT: orbit_camera::Spherical =
+    orbit_camera::Spherical {
+        r: 21.9,
+        theta: PI * 0.5, // 1.0:天頂、0.5:真横、0.0:真下
+        phi: TAU * 0.0,  // 時計の6時方向が0.0で反時計回り
+    };
+
+// カメラ情報の初期化
+impl Default for CameraSettings
+{
+    fn default() -> Self
+    {
+        Self(vec![
+            simple_camera::Setting::from((
+                2,              // カメラのレンダリング優先度（0が最後）
+                COLOR_NONE,     // レンダリング時の背景色（NONEは透明）
+                SimpleCamera2d, // マーカー（Component）
+                Camera2d,       // カメラ種類（Component）
+                Transform::from_translation(CAMERA2D_POSITION), // カメラの位置
+            )),
+            // ★ミニマップカメラ用にレンダリング優先度１を予約
+            simple_camera::Setting::from((
+                0,
+                COLOR_BLACK,
+                SimpleCamera3dOrbit,
+                Camera3d::default(),
+                Transform::from_translation(CAMERA3D_POSITION_ORBIT.into())
+                    .looking_at(Vec3::ZERO, Vec3::Y),
+            )),
+        ])
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+// コンパイル オプションの定数
+pub const ATTACH_VIEWPORT: fn() -> bool = || cfg!(feature = "attach_viewport");
+// pub const SPRITE_OFF: fn() -> bool = || cfg!(feature = "sprite_off");
+
+////////////////////////////////////////////////////////////////////////////////
+
+// スプライト重なり
+pub const DEPTH_SPRITE_KANI_DOTOWN: f32 = 900.0; // フッターの蟹アイコン
+// pub const DEPTH_SPRITE_CHASER: f32 = 700.0; // チェイサーのスプライト
+// pub const DEPTH_SPRITE_PLAYER: f32 = 600.0; // プレイヤーのスプライト
+// pub const DEPTH_SPRITE_DOT: f32 = 500.0; // ドットスプライト
+// pub const DEPTH_SPRITE_BRICK_WALL: f32 = 400.0; // 壁スプライト
+
+////////////////////////////////////////////////////////////////////////////////
 
 //単位Gridの縦横(Pixel)
 // const BASE_PIXELS : i32 = 8;
@@ -330,38 +364,11 @@ impl Default for appctrl_input::UiOutlineToggleInput
 //============================================================================
 // pub const CAMERA_ORDER_DEFAULT_3D: isize = 0; //3D デフォルトカメラが最下
 
-//カメラの背景色
-// const CAMERA_BG_THROUGH: ClearColorConfig = ClearColorConfig::None;
-// const CAMERA_BG_COLOR  : ClearColorConfig = ClearColorConfig::Custom( Color::BLACK );
-
-// pub const CAMERA_BGCOLOR_2D: ClearColorConfig = CAMERA_BG_THROUGH;
-// pub const CAMERA_BGCOLOR_3D: ClearColorConfig = CAMERA_BG_COLOR;
-
 //3Dライトの設定
 // pub const LIGHT_3D_BRIGHTNESS : f32  = 3000.0; //明るさ
 //============================================================================
 // pub const LIGHT_3D_TRANSLATION: Vec3 = Vec3::new( -100.0, 300.0, 300.0 ); //位置
 //============================================================================
-
-//デフォルト2Dカメラの位置
-//第四象限。左上隅が(0,0)で、X軸はプラス方向へ、Y軸はマイナス方向へ伸びる
-// pub const CAMERA_POSITION_DEFAULT_2D: Vec3 = Vec3::new
-// (   SCREEN_PIXELS_WIDTH  *  0.5,
-//     SCREEN_PIXELS_HEIGHT * -0.5,
-//     0.0
-// );
-
-//極座標カメラの設定
-//============================================================================
-// pub const CAMERA_ORBIT_INIT_R    : f32 = 21.9;      //初期値
-// pub const CAMERA_ORBIT_INIT_THETA: f32 = PI  * 0.5; //初期値(ラジアン) 1.0:天頂、0.5:真横、0.0:真下
-// pub const CAMERA_ORBIT_INIT_PHI  : f32 = TAU * 0.0; //初期値(ラジアン) 6時方向が0.0で反時計回り
-//============================================================================
-
-// pub const CAMERA_ORBIT_MAX_R    : f32 = 50.0;      //rの最大値
-// pub const CAMERA_ORBIT_MIN_R    : f32 = 1.0;       //rの最小値
-// pub const CAMERA_ORBIT_MAX_THETA: f32 = PI * 0.99; //Θの最大値(ラジアン)
-// pub const CAMERA_ORBIT_MIN_THETA: f32 = PI * 0.51; //Θの最小値(ラジアン)
 
 ////////////////////////////////////////////////////////////////////////////////
 

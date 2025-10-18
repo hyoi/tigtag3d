@@ -1,7 +1,7 @@
 // external crates
 use bevy::{
     prelude::*,
-    ecs::{error::warn, system::SystemParam /*, component::Mutable*/},
+    ecs::{error::warn, system::SystemParam, component::Mutable},
     log::LogPlugin,
     diagnostic::{FrameTimeDiagnosticsPlugin /*, DiagnosticsStore*/},
     window::{EnabledButtons, WindowMode},
@@ -12,8 +12,8 @@ use bevy::{
     },
     asset::{LoadedUntypedAsset, LoadState},
     color::palettes::css,
+    camera::Viewport,
     // audio::Volume,
-    // camera::Viewport,
     // ecs::query::QueryFilter,
     // utils::Duration,
     // dev_tools::ui_debug_overlay,
@@ -30,7 +30,7 @@ use rand::prelude::*;
 use std::
 {
     slice::Iter,
-    ops::{ Range /*, Deref, DerefMut, Add, AddAssign*/},
+    ops::{ Range, Deref, DerefMut, Add, AddAssign},
     f32::consts::{ PI, TAU },
     // sync::LazyLock,
     // cmp::Ordering,
@@ -52,8 +52,8 @@ use config::*;
 // proc-macro
 use macros::MyState;
 use macros::derive_appctrl_input;
-// use macros::{OverlayMessage, Blinking, CountDown};
-// use macros::{OverlayMenu, ScalingItem};
+use macros::{OverlayMessage, Blinking, CountDown};
+use macros::{OverlayMenu, ScalingItem};
 
 ////////////////////////////////////////////////////////////////////////////////
 

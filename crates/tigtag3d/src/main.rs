@@ -6,7 +6,7 @@ use bevy::{
     diagnostic::{FrameTimeDiagnosticsPlugin, DiagnosticsStore},
     window::{EnabledButtons, WindowMode},
     input::{
-        // keyboard::NativeKeyCode,
+        keyboard::NativeKeyCode,
         gamepad::GamepadInput,
         mouse::{MouseMotion, MouseWheel},
     },
@@ -32,7 +32,6 @@ use std::
     slice::Iter,
     ops::{ Range, Deref, DerefMut, Add, AddAssign},
     f32::consts::{ PI, TAU },
-    // sync::LazyLock,
     // cmp::Ordering,
     // collections::VecDeque,
 };
@@ -54,21 +53,6 @@ use macros::MyState;
 use macros::derive_appctrl_input;
 use macros::{OverlayMessage, Blinking, CountDown};
 use macros::{OverlayMenu, ScalingItem};
-
-////////////////////////////////////////////////////////////////////////////////
-
-//アプリの情報
-// pub const APP_TITLE: &str = "TigTag3D"; //env!( "CARGO_PKG_NAME" );
-// pub const APP_VER  : &str = env!( "CARGO_PKG_VERSION" );
-// pub const COPYRIGHT: &str = "hyoi 2024 - XXXX";
-
-//ウィンドウ縦横(Grid)
-// pub const SCREEN_GRIDS_WIDTH : i32 = 43; //memo: 25 best 43
-// pub const SCREEN_GRIDS_HEIGHT: i32 = 24; //memo: 19 best 24
-
-//コンパイル オプションの定数
-// pub const SPRITE_OFF     : fn() -> bool = || cfg!( feature = "sprite_off"      );
-// pub const ATTACH_VIEWPORT: fn() -> bool = || cfg!( feature = "attach_viewport" );
 
 ////////////////////////////////////////////////////////////////////////////////
 

@@ -344,6 +344,39 @@ const ER_BAD_SCREEN_DESIGN: &str = "Frame design unmatch width/height parameters
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// Hit ANY Keyの処理で無視するキーとボタン
+#[rustfmt::skip]
+pub const IGNORE_KEYS_HITANYKEY: &[KeyCode] = &[
+    KeyCode::AltLeft    , KeyCode::AltRight,
+    KeyCode::ControlLeft, KeyCode::ControlRight,
+    KeyCode::ShiftLeft  , KeyCode::ShiftRight,
+    KeyCode::SuperLeft  , KeyCode::SuperRight,
+    KeyCode::ArrowUp    , KeyCode::ArrowDown,
+    KeyCode::ArrowRight , KeyCode::ArrowLeft,
+    KeyCode::Fn,
+    KeyCode::Unidentified(NativeKeyCode::Windows(57443)), //ThinkPad [Fn]
+];
+#[rustfmt::skip]
+pub const IGNORE_BUTTONS_HITANYKEY: &[GamepadButton] = &[
+    GamepadButton::Select, //ps4[SHARE]
+    GamepadButton::Start,  //ps4[OPTIONS]
+    GamepadButton::Mode,   //ps4[PSボタン]
+];
+
+// .init_resource()用default
+impl Default for misc::MaskHitAnyKeyInput
+{
+    fn default() -> Self
+    {
+        Self {
+            keys: FxHashSet::from_iter(IGNORE_KEYS_HITANYKEY.iter()),
+            buttons: FxHashSet::from_iter(IGNORE_BUTTONS_HITANYKEY.iter()),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 //カメラのレンダリングの重なり
 // pub const CAMERA_ORDER_DEFAULT_2D: isize = 2; //2D デフォルトカメラ
 //============================================================================

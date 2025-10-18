@@ -1,6 +1,7 @@
 /target
-/backup
 /.idea
+
+backup/
 
 Todo.md
 Cargo.lock

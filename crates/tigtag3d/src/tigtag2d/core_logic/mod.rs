@@ -10,7 +10,7 @@ pub mod information; // 表示情報更新（ヘッダー・フッター）
 pub mod overlay_ui; // 全画面メッセージ関連
 use overlay_ui::messages::OverlayMessage;
 
-// pub mod detecting_change; // ステージクリアとゲームオーバーの判定
+pub mod detecting_change; // ステージクリアとゲームオーバーの判定
 
 pub mod map; // 迷路生成
 pub mod player; // プレイヤー

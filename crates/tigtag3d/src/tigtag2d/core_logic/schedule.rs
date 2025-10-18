@@ -13,7 +13,7 @@ impl Plugin for Schedule
         application
             // スケジュールの追加
             .add_plugins(init_app::Schedule { next: MyState::Initialize } ) // アプリ初期化とアセットロード
-            // .add_plugins(demo_play::Schedule)                               // デモプレイ
+            .add_plugins(demo_play::Schedule)                               // デモプレイ
             // .add_plugins(overlay_ui::pause_menu::Schedule)                  // Pauseメニュー
 
             // Resourceの登録
@@ -94,7 +94,7 @@ impl Plugin for Schedule
                         .in_set(misc::execution_order::Target::HitAnyKey),
                     (
                         // scoreとstageをゼロクリアする(demoの情報消去)
-                        // detecting_change::initialize_score_stage,
+                        detecting_change::initialize_score_stage,
 
                         // Stateを変更
                         misc::set_next_state(MyState::StageStart),

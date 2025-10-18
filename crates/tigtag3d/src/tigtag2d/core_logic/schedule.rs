@@ -74,44 +74,45 @@ impl Plugin for Schedule
 
         //--------------------------------------------------------------------------
         // タイトル画面の処理（MyState::TitleDemo）
-        // application
-        //     // 前処理
-        //     .add_systems(
-        //         OnEnter(MyState::TitleDemo),
-        //         (
-        //             // 全画面メッセージ（タイトル）表示
-        //             OverlayTitleDemo::init(),
-        //             misc::show_component::<OverlayTitleDemo>
-        //                 .after(OverlayTitleDemo::init()),
-        //         ),
-        //     )
-        //     // ループ処理
-        //     .add_systems(
-        //         Update, // within MyState::TitleDemo
-        //         (
-        //             // Hit ANY Key に反応あればState遷移
-        //             misc::check_hit_any_key
-        //                 .in_set(misc::execution_order::Target::HitAnyKey),
-        //             (
-        //                 // scoreとstageをゼロクリアする(demoの情報消去)
-        //                 detecting_change::initialize_score_stage,
-        //                 misc::set_next_state(MyState::StageStart),
-        //             )
-        //                 .in_set(misc::execution_order::After::HitAnyKey)
-        //                 .run_if(on_message::<misc::AnyButtonPressed>),
-        //             // DEMO の明滅
-        //             overlay_ui::effect::blinking_text::<OverlayTitleDemo>,
-        //         )
-        //             .run_if(in_state(MyState::TitleDemo)),
-        //     )
-        //     // 後処理
-        //     .add_systems(
-        //         OnExit(MyState::TitleDemo),
-        //         (
-        //             // 全画面メッセージ（タイトル）非表示
-        //             misc::hide_component::<OverlayTitleDemo>,
-        //         ),
-        //     );
+        application
+            // 前処理
+            .add_systems(
+                OnEnter(MyState::TitleDemo),
+                (
+                    // 全画面メッセージ（タイトル）表示
+                    OverlayTitleDemo::init(),
+                    misc::show_component::<OverlayTitleDemo>
+                        .after(OverlayTitleDemo::init()),
+                ),
+            )
+            // ループ処理
+            .add_systems(
+                Update, // within MyState::TitleDemo
+                (
+                    // Hit ANY Key に反応あればState遷移
+                    // misc::check_hit_any_key
+                    //     .in_set(misc::execution_order::Target::HitAnyKey),
+                    // (
+                    //     // scoreとstageをゼロクリアする(demoの情報消去)
+                    //     detecting_change::initialize_score_stage,
+                    //     misc::set_next_state(MyState::StageStart),
+                    // )
+                    //     .in_set(misc::execution_order::After::HitAnyKey)
+                    //     .run_if(on_message::<misc::AnyButtonPressed>),
+                    // DEMO の明滅
+                    overlay_ui::effect::blinking_text::<OverlayTitleDemo>,
+                )
+                    .run_if(in_state(MyState::TitleDemo)),
+            )
+            // 後処理
+            // .add_systems(
+            //     OnExit(MyState::TitleDemo),
+            //     (
+            //         // 全画面メッセージ（タイトル）非表示
+            //         misc::hide_component::<OverlayTitleDemo>,
+            //     ),
+            // )
+            ;
 
         //--------------------------------------------------------------------------
         // ゲーム開始処理（MyState::StageStart）

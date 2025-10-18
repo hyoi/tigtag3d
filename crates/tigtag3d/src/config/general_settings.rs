@@ -251,6 +251,7 @@ pub const SPRITE_OFF: fn() -> bool = || cfg!(feature = "sprite_off");
 
 // スプライト重なり
 pub const DEPTH_SPRITE_KANI_DOTOWN: f32 = 900.0; // フッターの蟹アイコン
+pub const DEPTH_SPRITE_GAME_FRAME : f32 = 800.0; //ゲームの枠のスプライト
 pub const DEPTH_SPRITE_CHASER: f32 = 700.0; // チェイサーのスプライト
 pub const DEPTH_SPRITE_PLAYER: f32 = 600.0; // プレイヤーのスプライト
 pub const DEPTH_SPRITE_DOT: f32 = 500.0; // ドットスプライト
@@ -264,102 +265,82 @@ pub const SPRITE_DOT_COLOR: Color = Color::srgb(1.0, 1.0, 0.7);
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//単位Gridの縦横(Pixel)
-// const BASE_PIXELS : i32 = 8;
-// const BASE_SCALING: f32 = 4.0;
-// pub const PIXELS_PER_GRID: f32 = BASE_PIXELS as f32 * BASE_SCALING;
+// 画面デザイン(枠)の型
+pub struct ScreenFrame<'a>
+{   pub design  : Vec<&'a str>,
+    pub viewport: ViewPortInfo, // 3Dカメラの表示領域(viewport)の情報
+    pub minimap : MiniMapInfo,  // ミニマップの情報
+}
+pub struct ViewPortInfo
+{   pub origin: Vec2,
+    pub size  : Vec2,
+}
+pub struct MiniMapInfo
+{   pub zero: IVec2,
+    pub size: IVec2,
+}
 
-//ウィンドウ縦横(Pixel)
-// pub const SCREEN_PIXELS_WIDTH : f32 = PIXELS_PER_GRID * SCREEN_GRIDS_WIDTH  as f32;
-// pub const SCREEN_PIXELS_HEIGHT: f32 = PIXELS_PER_GRID * SCREEN_GRIDS_HEIGHT as f32;
+// 画面デザイン(枠)
+impl<'a> Default for ScreenFrame<'a>
+{
+    fn default() -> Self
+    {
+        let design = vec!
+        [  //0123456789_123456789_123456789_123456789_12
+            "###########################################", //0
+            "#                               ###########", //1
+            "#                               ###########", //2
+            "#                               ###########", //3
+            "#                               ###########", //4
+            "#                               ###########", //5
+            "#                               ###########", //6
+            "#                               ###########", //7
+            "#                               ###########", //8
+            "#                               ###########", //9
+            "#                               ###########", //10
+            "#                               ###########", //11
+            "#                               #tigtag/2d#", //12
+            "#                               #         #", //13
+            "#                               #         #", //14
+            "#                               #         #", //15
+            "#                               #         #", //16
+            "#                               #         #", //17
+            "#                               #         #", //18
+            "#                               #         #", //19
+            "#                               #         #", //20
+            "#                               #         #", //21
+            "###########################################", //22
+            "                                           ", //23
+        ]; //0123456789_123456789_123456789_123456789_12
 
-//ウィンドウの定義
-// pub static MAIN_WINDOW: LazyLock<Option<Window>> = LazyLock::new
-// (   ||
-//     {   let window = Window
-//         {   title: format!( "{APP_TITLE} v{APP_VER}" ),
-//             resolution: ( SCREEN_PIXELS_WIDTH, SCREEN_PIXELS_HEIGHT ).into(),
-//             resizable: false,
-//             enabled_buttons: bevy::window::EnabledButtons
-//             {   minimize: false,
-//                 maximize: false,
-//                 close   : true,
-//             },
-//             // fit_canvas_to_parent: true, //v0.13で廃止(#11057)、v0.14で復活(#11278)
-//             ..default()
-//         };
-//         Some ( window )
-//     }
-// );
+        if design[ 0 ].len() != SCREEN_GRIDS_WIDTH  as usize
+        || design.len()      != SCREEN_GRIDS_HEIGHT as usize
+        {   panic!( "APPERR: {}", ER_BAD_SCREEN_DESIGN );
+        }
 
-////////////////////////////////////////////////////////////////////////////////
+        //3Dカメラの表示領域(viewport)の設定
+        let viewport = ViewPortInfo
+        {   origin: ( IVec2::new(  1,  1 ).as_vec2() - 0.5 ) * PIXELS_PER_GRID,
+            size  : ( IVec2::new( 31, 21 ).as_vec2() + 1.0 ) * PIXELS_PER_GRID,
+        };
 
-//ログレベル
-// pub const LOG_LEVEL_DEV: &str = "warn,wgpu_hal=error"; //開発
-// pub const LOG_LEVEL_REL: &str = "error"; //リリース
+        //ミニマップの小窓の設定
+        let minimap = MiniMapInfo
+        {   zero: VIEWPORT_MINIMAP_ORIGIN,
+            size: VIEWPORT_MINIMAP_SIZE,
+        };
 
-////////////////////////////////////////////////////////////////////////////////
+        ScreenFrame { design, viewport, minimap }
+    }
+}
 
-//画面デザイン(枠)
-// pub const SCREEN_FRAME_SPACE_CHAR : char = ' ';
-// pub const SCREEN_FRAME_LABEL_REGEX: &str = r"[a-zA-Z0-9\.]+";
+pub const SCREEN_FRAME_SPACE_CHAR : char = ' ';
+pub const SCREEN_FRAME_LABEL_REGEX: &str = r"[a-zA-Z0-9\.\,\/]+";
 
-// pub const VIEWPORT_MINIMAP_ORIGIN: IVec2 = IVec2::new( 33, 13 );
-// pub const VIEWPORT_MINIMAP_SIZE  : IVec2 = IVec2::new(  9,  9 );
+pub const VIEWPORT_MINIMAP_ORIGIN: IVec2 = IVec2::new( 33, 13 );
+pub const VIEWPORT_MINIMAP_SIZE  : IVec2 = IVec2::new(  9,  9 );
 
-// pub static SCREEN_FRAME: LazyLock<ScreenFrame> = LazyLock::new
-// (   ||
-//     {   let design = vec!
-//         [  //0123456789_123456789_123456789_123456789_12
-//             "###########################################", //0
-//             "#                               ###########", //1
-//             "#                               ###########", //2
-//             "#                               ###########", //3
-//             "#                               ###########", //4
-//             "#                               ###########", //5
-//             "#                               ###########", //6
-//             "#                               ###########", //7
-//             "#                               ###########", //8
-//             "#                               ###########", //9
-//             "#                               ###########", //10
-//             "#                               ###########", //11
-//             "#                               #TigTag2D##", //12
-//             "#                               #         #", //13
-//             "#                               #         #", //14
-//             "#                               #         #", //15
-//             "#                               #         #", //16
-//             "#                               #         #", //17
-//             "#                               #         #", //18
-//             "#                               #         #", //19
-//             "#                               #         #", //20
-//             "#                               #         #", //21
-//             "###########################################", //22
-//             "                                           ", //23
-//         ]; //0123456789_123456789_123456789_123456789_12
-
-//         if design[ 0 ].len() != SCREEN_GRIDS_WIDTH  as usize
-//         || design.len()      != SCREEN_GRIDS_HEIGHT as usize
-//         {   panic!( "APPERR: {}", ER_BAD_SCREEN_DESIGN );
-//         }
-
-//         //3Dカメラの表示領域(viewport)の設定
-//         let viewport = ViewPortInfo
-//         {   origin: ( IVec2::new(  1,  1 ).as_vec2() - 0.5 ) * PIXELS_PER_GRID,
-//             size  : ( IVec2::new( 31, 21 ).as_vec2() + 1.0 ) * PIXELS_PER_GRID,
-//         };
-
-//         //ミニマップの小窓の設定
-//         let minimap = MiniMapInfo
-//         {   zero: VIEWPORT_MINIMAP_ORIGIN,
-//             size: VIEWPORT_MINIMAP_SIZE,
-//         };
-
-//         ScreenFrame { design, viewport, minimap }
-//     }
-// );
-
-//エラーメッセージ
-// const ER_BAD_SCREEN_DESIGN: &str = "Frame design unmatch width/height parameters.";
+const ER_BAD_SCREEN_DESIGN: &str = "Frame design unmatch width/height parameters.";
 
 ////////////////////////////////////////////////////////////////////////////////
 

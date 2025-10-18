@@ -13,18 +13,18 @@ use bevy::{
     asset::{LoadedUntypedAsset, LoadState},
     color::palettes::*,
     camera::Viewport,
+    sprite::Anchor,
     // audio::Volume,
     // ecs::query::QueryFilter,
     // utils::Duration,
     // dev_tools::ui_debug_overlay,
-    // sprite::{ MaterialMesh2dBundle, Anchor },
     // utils::{ HashMap, HashSet },
 };
 
 use rustc_hash::{FxHashSet, FxHashMap};
 use rand::prelude::*;
+use regex::Regex;
 // use chrono::prelude::Local as time_local; //「Local」がbevyとバッティングするのでaliasを使う
-// use regex::Regex;
 
 // standard library
 use std::

@@ -21,8 +21,9 @@ attach_viewport = [] #viewportをcameraに設定する
 bevy.workspace = true
 rand.workspace = true
 getrandom.workspace = true
-chrono.workspace = true
+#chrono.workspace = true
 rustc-hash.workspace = true
+regex.workspace = true
 macros.workspace = true
 
 [workspace.dependencies]
@@ -37,9 +38,9 @@ bevy = { version = "0.17", features = ["bevy_ui_debug"] }
 #依存するその他のcrate
 rand = "0.9"
 getrandom = { version = "0.3", features = [ "wasm_js" ] } #wasmコンパイル時のエラー対策
-chrono = "0.4"
+#chrono = "0.4"
 rustc-hash = "2"
-#regex = "1.10"
+regex = "1"
 
 #マクロ関係の依存
 macros        = { path = "crates/macros"        }

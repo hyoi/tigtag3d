@@ -36,24 +36,15 @@ impl Plugin for Schedule
 
         //--------------------------------------------------------------------------
         // 初期化（MyState::Initialize）
-        // application
-        //     // 前処理
-        //     .add_systems(
-        //         OnEnter(MyState::Initialize),
-        //         (
-        //             // カメラのspawn
-        //             simple_camera::spawn::<CameraSettings>,
-        //             misc::select_ui_camera // UIを描画するカメラの選択
-        //                 .after(simple_camera::spawn::<CameraSettings>),
-
-        //             // TextUIのspawn
-        //             header_footer::spawn,        // ヘッダー／フッター
-        //             overlay_ui::messages::spawn, //全画面メッセージ
-
-        //             // 無条件遷移
-        //             misc::set_next_state(MyState::TitleDemo)
-        //         ),
-        //     );
+        application
+            // 後処理
+            .add_systems(
+                OnExit(MyState::Initialize),
+                (
+                    // ゲーム画面の枠を表示
+                    spawn_screen_frame,
+                ),
+            );
 
         //--------------------------------------------------------------------------
         // 常に実行する処理（Update without MyState）
@@ -272,6 +263,69 @@ impl Plugin for Schedule
         //             detecting_change::initialize_score_stage,
         //         ),
         //     );
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//ゲームの枠を表示する
+fn spawn_screen_frame
+(   mut cmds : Commands,
+    asset_svr: Res<AssetServer>,
+)
+{   let custom_size = Some ( CELL_CUSTOM_SIZE );
+    let alpha = if misc::DEBUG() { 0.5 } else { 1.0 }; //DEBUG時に透過させる
+    let color = Color::srgba( 1.0, 1.0, 1.0, alpha );
+    let regex = Regex::new( SCREEN_FRAME_LABEL_REGEX ).unwrap();
+    let adjust = Vec2::X * PIXELS_PER_GRID / 2.0;
+
+    for ( y, line ) in ScreenFrame::default().design.iter().enumerate()
+    {   //レンガのスプライトを敷き詰める
+        for ( x, char ) in line.chars().enumerate()
+        {   if char == SCREEN_FRAME_SPACE_CHAR { continue }
+
+            let vec2 = IVec2::new( x as i32, y as i32 ).to_screen_pixels();
+            let vec3 = vec2.extend( DEPTH_SPRITE_GAME_FRAME );
+
+            cmds.spawn
+            (
+                (
+                    Sprite {
+                        image: asset_svr.load(ASSETS_SPRITE_BRICK_WALL),
+                        custom_size,
+                        color,
+                        ..default()
+                    },
+                    Transform::from_translation( vec3 ),
+                )
+
+            );
+        }
+
+        //ラベル文字列があるなら
+        for m in regex.find_iter( line )
+        {
+            let value = m.as_str().to_string();
+            let vec2 = IVec2::new( m.start() as i32, y as i32 ).to_screen_pixels() - adjust;
+            let vec3 = vec2.extend( DEPTH_SPRITE_GAME_FRAME + 1.0 );
+
+            cmds.spawn
+            (
+                (
+                    Text2d::new(value),
+                    TextFont
+                    {
+                        font: asset_svr.load( ASSETS_FONT_PRESSSTART2P_REGULAR ),
+                        font_size: PIXELS_PER_GRID,
+                        ..default()
+                    },
+                    TextColor(COLOR_GOLD),
+                    Transform::from_translation( vec3 ),
+                    Anchor::CENTER_LEFT,
+                )
+            );
+
+        }
     }
 }
 

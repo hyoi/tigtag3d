@@ -122,21 +122,28 @@ pub fn spawn_3d_map_entity
 ////////////////////////////////////////////////////////////////////////////////
 
 //3Dマップの表示を更新する
-// pub fn update_3d_map
-// (   mut evt_eatdot: EventReader<tigtag::EventEatDot>,
-//     opt_dots3d: Option<ResMut<Dots3D>>,
-//     mut cmds: Commands,
-// )
-// {   let Some ( dots3d ) = opt_dots3d else { return };
+pub fn update_3d_map
+(
+    option_dots3d: Option<ResMut<Dots3D>>,
+    mut evt_eatdot: MessageReader<tigtag2d::core_logic::DotEaten>,
+    mut cmds: Commands,
+) -> Result
+{
+    // 準備
+    let dots3d = option_dots3d.ok_or("Resource not found.")?;
 
-//     //削除されたドットがあれば3Dマップに反映する
-//     for event in evt_eatdot.read()
-//     {   let tigtag::EventEatDot ( IVec2 { x, y } ) = event;
-//         if let Some ( id ) = dots3d.entities[ *x as usize ][ *y as usize ]
-//         {   cmds.entity( id ).despawn_recursive();
-//         }
-//     }
-// }
+    //削除されたドットがあれば3Dマップに反映する
+    for event in evt_eatdot.read()
+    {
+        let tigtag2d::core_logic::DotEaten ( IVec2 { x, y } ) = event;
+        if let Some ( id ) = dots3d.entities[ *x as usize ][ *y as usize ]
+        {
+            cmds.entity( id ).despawn();
+        }
+    }
+
+    Ok(())
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

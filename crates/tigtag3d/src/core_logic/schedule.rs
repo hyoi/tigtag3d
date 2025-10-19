@@ -94,27 +94,22 @@ impl Plugin for Schedule
                 )
             )
             // ループ処理
-            // .add_systems
-            // (
-            //     Update, // within MyState::TitleDemo
-            //     (   //3D表示を更新する
-            //         map::update_3d_map          //マップのドットが消える処理
-            //             .run_if( on_event::<tigtag::EventEatDot>() ),
-            //         player::update_3d_player,   //自キャラの移動
-            //         chasers::update_3d_chasers, //敵キャラの移動
-            //     )
-            //     .run_if( in_state( MyState::TitleDemo ) )
-            // )
+            .add_systems
+            (
+                Update, // within MyState::TitleDemo
+                (
+                    // 3Dマップのドットを消す処理
+                    map::update_3d_map
+                        .run_if( on_message::<tigtag2d::core_logic::DotEaten> ),
 
-            // 後処理
-            // .add_systems(
-            //     OnExit(MyState::TitleDemo),
-            //     (
-            //         // 全画面メッセージ（タイトル）非表示
-            //         misc::hide_component::<OverlayTitleDemo>,
-            //     ),
-            // )
-            ;
+                    // 3Dプレイヤーの移動
+                    // player::update_3d_player,
+
+                    // 3Dチェイサーの移動
+                    // chasers::update_3d_chasers,
+                )
+                .run_if( in_state( MyState::TitleDemo ) )
+            );
 
         //--------------------------------------------------------------------------
         // ゲーム開始処理（MyState::StageStart）

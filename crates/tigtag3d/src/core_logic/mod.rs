@@ -12,7 +12,7 @@ pub use schedule::Schedule;
 
 // pub mod detecting_change; // ステージクリアとゲームオーバーの判定
 
-// pub mod map; // 迷路生成
+pub mod map; // 迷路生成
 // pub mod player; // プレイヤー
 // pub mod chaser; // チェイサー
 

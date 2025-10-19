@@ -10,13 +10,15 @@ impl Plugin for Schedule
     {
         //--------------------------------------------------------------------------
         // 各種登録
-        // application
+        application
         //     // スケジュールの追加
         //     .add_plugins(init_app::Schedule { next: MyState::Initialize } ) // アプリ初期化とアセットロード
         //     .add_plugins(demo_play::Schedule)                               // デモプレイ
         //     .add_plugins(overlay_ui::pause_menu::Schedule)                  // Pauseメニュー
 
-        //     // Resourceの登録
+            // Resourceの登録
+            .init_resource::<map::Dots3D>() //3DドットEntityの保存用2次元vec
+
         //     .init_resource::<CameraSettings>()                  // カメラの設定を登録
         //     .init_resource::<Record>()                          // ゲームの成績
         //     .init_resource::<misc::MaskHitAnyKeyInput>()        // 「Hit Any Key」の入力マスク
@@ -32,7 +34,7 @@ impl Plugin for Schedule
         //     .add_message::<DotsAllEaten >()          // ステージクリアの伝達用
         //     .add_message::<DotEaten>()               // スコアリングの伝達用
         //     .add_message::<PlayerCaught>()           // ゲームオーバーの伝達用
-        //     ;
+            ;
 
         //--------------------------------------------------------------------------
         // 初期化（MyState::Initialize）
@@ -43,6 +45,10 @@ impl Plugin for Schedule
                 (
                     // ゲーム画面の枠を表示
                     spawn_screen_frame,
+                    // 3Dライトをspawnする
+                    spawn_simple_light3d,
+                    // 既存の3Dカメラにviewportをセット、位置と注視点を変更する
+                    change_camera3d_settings,
                 ),
             );
 
@@ -65,44 +71,50 @@ impl Plugin for Schedule
 
         //--------------------------------------------------------------------------
         // タイトル画面の処理（MyState::TitleDemo）
-        // application
-        //     // 前処理
-        //     .add_systems(
-        //         OnEnter(MyState::TitleDemo),
-        //         (
-        //             // 全画面メッセージ（タイトル）表示
-        //             OverlayTitleDemo::init(),
-        //             misc::show_component::<OverlayTitleDemo>
-        //                 .after(OverlayTitleDemo::init()),
-        //         ),
-        //     )
-        //     // ループ処理
-        //     .add_systems(
-        //         Update, // within MyState::TitleDemo
-        //         (
-        //             // Hit ANY Key に反応あればState遷移
-        //             misc::check_hit_any_key
-        //                 .in_set(misc::execution_order::Target::HitAnyKey),
-        //             (
-        //                 // scoreとstageをゼロクリアする(demoの情報消去)
-        //                 detecting_change::initialize_score_stage,
-        //                 misc::set_next_state(MyState::StageStart),
-        //             )
-        //                 .in_set(misc::execution_order::After::HitAnyKey)
-        //                 .run_if(on_message::<misc::AnyButtonPressed>),
-        //             // DEMO の明滅
-        //             overlay_ui::effect::blinking_text::<OverlayTitleDemo>,
-        //         )
-        //             .run_if(in_state(MyState::TitleDemo)),
-        //     )
-        //     // 後処理
-        //     .add_systems(
-        //         OnExit(MyState::TitleDemo),
-        //         (
-        //             // 全画面メッセージ（タイトル）非表示
-        //             misc::hide_component::<OverlayTitleDemo>,
-        //         ),
-        //     );
+        application
+            // 前処理
+            .add_systems
+            (   OnEnter ( MyState::TitleDemo ),
+                (
+                    // 3Dのマップをspawnする
+                    map::spawn_3d_map_entity
+                        .after( tigtag2d::core_logic::map::make_new_stage_data ),
+
+                    // // 3Dのプレイヤーをspawnする
+                    // player::spawn_3d_player
+                    //     .after( tigtag2d::core_logic::player::spawn_sprite ),
+
+                    // // 3Dのチェイサーをspawnする
+                    // chaser::spawn_3d_chasers
+                    //     .after( tigtag2d::core_logic::chaser::spawn_sprite ),
+
+                    // // ミニマップカメラをspawnする(2D自キャラの子にする)
+                    // player::spawn_minimap_camera
+                    //     .after( tigtag2d::core_logic::player::spawn_sprite ),
+                )
+            )
+            // ループ処理
+            // .add_systems
+            // (
+            //     Update, // within MyState::TitleDemo
+            //     (   //3D表示を更新する
+            //         map::update_3d_map          //マップのドットが消える処理
+            //             .run_if( on_event::<tigtag::EventEatDot>() ),
+            //         player::update_3d_player,   //自キャラの移動
+            //         chasers::update_3d_chasers, //敵キャラの移動
+            //     )
+            //     .run_if( in_state( MyState::TitleDemo ) )
+            // )
+
+            // 後処理
+            // .add_systems(
+            //     OnExit(MyState::TitleDemo),
+            //     (
+            //         // 全画面メッセージ（タイトル）非表示
+            //         misc::hide_component::<OverlayTitleDemo>,
+            //     ),
+            // )
+            ;
 
         //--------------------------------------------------------------------------
         // ゲーム開始処理（MyState::StageStart）
@@ -327,6 +339,54 @@ fn spawn_screen_frame
 
         }
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+// 3Dライトをspawnする
+pub fn spawn_simple_light3d(mut cmds: Commands)
+{
+    cmds.spawn((
+        DirectionalLight {
+            illuminance: SIMPLE_LIGHT3D_BRIGHTNESS,
+            shadows_enabled: true,
+            ..default()
+        },
+        Transform::from_translation(SIMPLE_LIGHT3D_POSITION)
+            .looking_at(Vec3::ZERO, Vec3::Y),
+    ));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+// 3Dカメラにviewportをセット、位置と注視点を変更する
+fn change_camera3d_settings
+(
+    mut query_camera3d: Query<(Entity, &mut Camera), With<SimpleCamera3dOrbit>>,
+    mut cmds: Commands,
+) -> Result
+{
+    // 準備
+    let ( entity, mut camera ) = query_camera3d.single_mut()?;
+
+    // viewportをセットする
+    let screen_frame = ScreenFrame::default();
+    let viewport = Viewport
+        {   physical_position: screen_frame.viewport.origin.as_uvec2(),
+            physical_size    : screen_frame.viewport.size  .as_uvec2(),
+            ..default()
+        };
+    camera.viewport = Some( viewport );
+
+    // カメラの位置と注視点を変更する
+    let     x = ( tigtag2d::core_logic::map::MAP_WIDTH_IN_CELLS  - 1 ) as f32 *  0.5;
+    let neg_y = ( tigtag2d::core_logic::map::MAP_HEIGHT_IN_CELLS - 1 ) as f32 * -0.5;
+    let look_at = Vec3::new( x, neg_y, 0.0 );
+    let vec3 = Vec3::Z * 20.25 + look_at;
+    let transform = Transform::from_translation( vec3 );
+    cmds.entity(entity).insert(transform);
+
+    Ok(())
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -80,13 +80,13 @@ impl Plugin for Schedule
                     map::spawn_3d_map_entity
                         .after( tigtag2d::core_logic::map::make_new_stage_data ),
 
-                    // // 3Dのプレイヤーをspawnする
-                    // player::spawn_3d_player
-                    //     .after( tigtag2d::core_logic::player::spawn_sprite ),
+                    // 3Dのプレイヤーをspawnする
+                    player::spawn_3d_player
+                        .after( tigtag2d::core_logic::player::spawn_sprite ),
 
-                    // // 3Dのチェイサーをspawnする
-                    // chaser::spawn_3d_chasers
-                    //     .after( tigtag2d::core_logic::chaser::spawn_sprite ),
+                    // 3Dのチェイサーをspawnする
+                    chaser::spawn_3d_chasers
+                        .after( tigtag2d::core_logic::chaser::spawn_sprite ),
 
                     // // ミニマップカメラをspawnする(2D自キャラの子にする)
                     // player::spawn_minimap_camera

@@ -49,34 +49,39 @@ pub fn spawn_3d_player
 ////////////////////////////////////////////////////////////////////////////////
 
 //プレイヤーの子Entityとしてミニマップ用2Dカメラをspawnする
-// pub fn spawn_minimap_camera
-// (   player: Query<Entity, With<tigtag::Player>>,
-//     mut cmds: Commands,
-// )
-// {   let Ok ( player_id ) = player.get_single() else { return };
+pub fn spawn_minimap_camera
+(   player: Query<Entity, With<tigtag2d::core_logic::player::Player>>,
+    mut cmds: Commands,
+) -> Result
+{
+    // 準備
+    let player_id = player.single()?;
 
-//     //ミニマップ用2Dカメラをspawnする
-//     let zero = SCREEN_FRAME.minimap.zero.as_vec2() * PIXELS_PER_GRID;
-//     let size = SCREEN_FRAME.minimap.size.as_vec2() * PIXELS_PER_GRID;
-//     let viewport = Some
-//     (   Viewport
-//         {   physical_position: zero.as_uvec2(),
-//             physical_size    : size.as_uvec2(),
-//             ..default()
-//         }
-//     );
-//     let order = CAMERA_ORDER_MINIMAP_2D;
-//     let child = cmds.spawn( ( Camera2dBundle::default(), MinimapCamera ) )
-//     .insert( Camera
-//     {   viewport,
-//         order,
-//         clear_color: CAMERA_BGCOLOR_2D,
-//         ..default()
-//     } )
-//     .id()
-//     ;
-//     cmds.entity( player_id ).push_children( &[ child ] );
-// }
+    //ミニマップ用2Dカメラをspawnする
+    let screen_frame = ScreenFrame::default();
+    let zero = screen_frame.minimap.zero.as_vec2() * PIXELS_PER_GRID;
+    let size = screen_frame.minimap.size.as_vec2() * PIXELS_PER_GRID;
+    let viewport = Viewport
+        {   physical_position: zero.as_uvec2(),
+            physical_size    : size.as_uvec2(),
+            ..default()
+        };
+    let order = CAMERA_ORDER_MINIMAP_2D;
+    let child = cmds.spawn((
+        Camera {
+            viewport: Some ( viewport ),
+            order,
+            clear_color: COLOR_NONE.into(),
+            ..default()
+        },
+        Camera2d,
+        MinimapCamera,
+    ))
+    .id();
+    cmds.entity( player_id ).add_child(child);
+
+    Ok(())
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 

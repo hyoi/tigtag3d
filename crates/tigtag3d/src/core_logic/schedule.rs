@@ -88,9 +88,9 @@ impl Plugin for Schedule
                     chaser::spawn_3d_chasers
                         .after( tigtag2d::core_logic::chaser::spawn_sprite ),
 
-                    // // ミニマップカメラをspawnする(2D自キャラの子にする)
-                    // player::spawn_minimap_camera
-                    //     .after( tigtag2d::core_logic::player::spawn_sprite ),
+                    // ミニマップカメラをspawnする(2Dプレイヤーの子にする)
+                    player::spawn_minimap_camera
+                        .after( tigtag2d::core_logic::player::spawn_sprite ),
                 )
             )
             // ループ処理

@@ -213,12 +213,14 @@ pub fn move_sprite(
     query_player: Query<&player::Player>,
     option_map: Option<Res<map::Map>>,
     time: Res<Time>,
+    mut message_writer: MessageWriter<ChaserPositionAdjusted>,
 ) -> Result
 {
     // 準備
     let player = query_player.single()?;
     let map = option_map.ok_or("Resource not found.")?;
     let time_delta = time.delta();
+    let mut chaser_timer_finished = Vec::new();
 
     // 複数のチェイサーをループで処理する
     for (mut transform, mut sprite, mut chaser) in query_chaser.iter_mut()
@@ -229,6 +231,9 @@ pub fn move_sprite(
         // 移動タイマーがfinishしたなら
         if chaser.timer.tick(time_delta).is_finished()
         {
+            // 移動タイマーがfinishしたチェイサーの色を保存する
+            chaser_timer_finished.push(chaser.color);
+
             // セルの間を移動中のスプライトが半端な位置にいるなら
             if chaser.px_start != chaser.px_end
             {
@@ -313,6 +318,13 @@ pub fn move_sprite(
             chaser.px_start = chaser.px_end;
             chaser.px_end = transform.translation;
         }
+    }
+
+    // 移動タイマーがfinishしたチェイサーがいるなら
+    if !chaser_timer_finished.is_empty()
+    {
+        // メッセージでパッシングする
+        message_writer.write(ChaserPositionAdjusted(chaser_timer_finished));
     }
 
     // チェイサーは重なるとスピードアップする

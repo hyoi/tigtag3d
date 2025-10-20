@@ -27,18 +27,16 @@ use regex::Regex;
 // use chrono::prelude::Local as time_local; //「Local」がbevyとバッティングするのでaliasを使う
 
 // standard library
-use std::
-{
+use std::{
     slice::Iter,
-    ops::{ Range, Deref, DerefMut, Add, AddAssign},
-    f32::consts::{ PI, TAU },
+    ops::{Range, Deref, DerefMut, Add, AddAssign},
+    f32::consts::{PI, TAU},
     collections::VecDeque,
-    // cmp::Ordering,
 };
 
 // internal submodules
 mod core_logic; // 3Dビジュアライザ
-mod tigtag2d;   // ゲームロジック
+mod tigtag2d; // ゲームロジック
 
 mod my_utils; // 共通ライブラリ
 use my_utils::prelude::*;
@@ -61,7 +59,7 @@ fn main() -> AppExit
     App::new()
         // メインスケジュール
         .add_plugins(core_logic::Schedule) //3Dビジュアライザ
-        .add_plugins(tigtag2d::Schedule)   //tigtagのゲームロジック
+        .add_plugins(tigtag2d::Schedule) //tigtagのゲームロジック
         // アプリ実行
         .run()
 }

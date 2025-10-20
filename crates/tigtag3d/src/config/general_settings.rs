@@ -68,7 +68,7 @@ const BASE_PIXELS: i32 = 8;
 const BASE_SCALING: f32 = 4.0;
 
 // ウィンドウ縦横(Grid)
-pub const SCREEN_GRIDS_WIDTH : i32 = 43; //memo: 25 best 43
+pub const SCREEN_GRIDS_WIDTH: i32 = 43; //memo: 25 best 43
 pub const SCREEN_GRIDS_HEIGHT: i32 = 24; //memo: 19 best 24
 
 // アプリの情報
@@ -254,7 +254,7 @@ pub const SPRITE_OFF: fn() -> bool = || cfg!(feature = "sprite_off");
 
 // スプライト重なり
 pub const DEPTH_SPRITE_KANI_DOTOWN: f32 = 900.0; // フッターの蟹アイコン
-pub const DEPTH_SPRITE_GAME_FRAME : f32 = 800.0; //ゲームの枠のスプライト
+pub const DEPTH_SPRITE_GAME_FRAME: f32 = 800.0; //ゲームの枠のスプライト
 pub const DEPTH_SPRITE_CHASER: f32 = 700.0; // チェイサーのスプライト
 pub const DEPTH_SPRITE_PLAYER: f32 = 600.0; // プレイヤーのスプライト
 pub const DEPTH_SPRITE_DOT: f32 = 500.0; // ドットスプライト
@@ -270,16 +270,19 @@ pub const SPRITE_DOT_COLOR: Color = Color::srgb(1.0, 1.0, 0.7);
 
 // 画面デザイン(枠)の型
 pub struct ScreenFrame<'a>
-{   pub design  : Vec<&'a str>,
+{
+    pub design: Vec<&'a str>,
     pub viewport: ViewPortInfo, // 3Dカメラの表示領域(viewport)の情報
-    pub minimap : MiniMapInfo,  // ミニマップの情報
+    pub minimap: MiniMapInfo,   // ミニマップの情報
 }
 pub struct ViewPortInfo
-{   pub origin: Vec2,
-    pub size  : Vec2,
+{
+    pub origin: Vec2,
+    pub size: Vec2,
 }
 pub struct MiniMapInfo
-{   pub zero: IVec2,
+{
+    pub zero: IVec2,
     pub size: IVec2,
 }
 
@@ -288,8 +291,8 @@ impl<'a> Default for ScreenFrame<'a>
 {
     fn default() -> Self
     {
-        let design = vec!
-        [  //0123456789_123456789_123456789_123456789_12
+        let design = vec![
+            //123456789_123456789_123456789_123456789_12
             "###########################################", //0
             "#                               ###########", //1
             "#                               ###########", //2
@@ -316,32 +319,37 @@ impl<'a> Default for ScreenFrame<'a>
             "                                           ", //23
         ]; //0123456789_123456789_123456789_123456789_12
 
-        if design[ 0 ].len() != SCREEN_GRIDS_WIDTH  as usize
-        || design.len()      != SCREEN_GRIDS_HEIGHT as usize
-        {   panic!( "APPERR: {}", ER_BAD_SCREEN_DESIGN );
+        if design[0].len() != SCREEN_GRIDS_WIDTH as usize
+            || design.len() != SCREEN_GRIDS_HEIGHT as usize
+        {
+            panic!("APPERR: {}", ER_BAD_SCREEN_DESIGN);
         }
 
         //3Dカメラの表示領域(viewport)の設定
-        let viewport = ViewPortInfo
-        {   origin: ( IVec2::new(  1,  1 ).as_vec2() - 0.5 ) * PIXELS_PER_GRID,
-            size  : ( IVec2::new( 31, 21 ).as_vec2() + 1.0 ) * PIXELS_PER_GRID,
+        let viewport = ViewPortInfo {
+            origin: (IVec2::new(1, 1).as_vec2() - 0.5) * PIXELS_PER_GRID,
+            size: (IVec2::new(31, 21).as_vec2() + 1.0) * PIXELS_PER_GRID,
         };
 
         //ミニマップの小窓の設定
-        let minimap = MiniMapInfo
-        {   zero: VIEWPORT_MINIMAP_ORIGIN,
+        let minimap = MiniMapInfo {
+            zero: VIEWPORT_MINIMAP_ORIGIN,
             size: VIEWPORT_MINIMAP_SIZE,
         };
 
-        ScreenFrame { design, viewport, minimap }
+        ScreenFrame {
+            design,
+            viewport,
+            minimap,
+        }
     }
 }
 
-pub const SCREEN_FRAME_SPACE_CHAR : char = ' ';
+pub const SCREEN_FRAME_SPACE_CHAR: char = ' ';
 pub const SCREEN_FRAME_LABEL_REGEX: &str = r"[a-zA-Z0-9\.\,\/]+";
 
-pub const VIEWPORT_MINIMAP_ORIGIN: IVec2 = IVec2::new( 33, 13 );
-pub const VIEWPORT_MINIMAP_SIZE  : IVec2 = IVec2::new(  9,  9 );
+pub const VIEWPORT_MINIMAP_ORIGIN: IVec2 = IVec2::new(33, 13);
+pub const VIEWPORT_MINIMAP_SIZE: IVec2 = IVec2::new(9, 9);
 
 const ER_BAD_SCREEN_DESIGN: &str = "Frame design unmatch width/height parameters.";
 
@@ -411,16 +419,16 @@ pub const GAMEPAD_MAP: handle_input::ConnfigGamepad = &[
 ////////////////////////////////////////////////////////////////////////////////
 
 // アジャスタ（マップ座標から画面座標への変換調整値）
-pub const ADJUST_MAP_ON_SCREEN: IVec2 = IVec2::new
-(   VIEWPORT_MINIMAP_SIZE.x + SCREEN_GRIDS_WIDTH,
-    VIEWPORT_MINIMAP_SIZE.y + 1
+pub const ADJUST_MAP_ON_SCREEN: IVec2 = IVec2::new(
+    VIEWPORT_MINIMAP_SIZE.x + SCREEN_GRIDS_WIDTH,
+    VIEWPORT_MINIMAP_SIZE.y + 1,
 );
 
 ////////////////////////////////////////////////////////////////////////////////
 
 // 3Dライトの設定
 pub const SIMPLE_LIGHT3D_BRIGHTNESS: f32 = 3000.0; // 明るさ
-pub const SIMPLE_LIGHT3D_POSITION: Vec3 = Vec3::new( -100.0, 300.0, 300.0 ); //位置
+pub const SIMPLE_LIGHT3D_POSITION: Vec3 = Vec3::new(-100.0, 300.0, 300.0); //位置
 
 ////////////////////////////////////////////////////////////////////////////////
 

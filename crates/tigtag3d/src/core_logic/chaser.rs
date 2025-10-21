@@ -52,7 +52,7 @@ pub fn update_3d_chasers(
 )
 {
     //イベントが発生したチェイサーの色をハッシュに保存
-    let mut message_color = FxHashSet::default();
+    let mut message_color = HashSet::new();
     for x in message_timer.read()
     {
         let vec = &x.0;
@@ -62,7 +62,7 @@ pub fn update_3d_chasers(
     }
 
     // チェイサーの色をキーに3Dの位置を保存
-    let mut hash_transform = FxHashMap::default();
+    let mut hash_transform = HashMap::new();
     for (transform, chaser3d) in query_transform.iter_mut()
     {
         hash_transform.insert(LinearRgba::from(chaser3d.0).as_u32(), transform);

@@ -15,16 +15,11 @@ use bevy::{
     camera::Viewport,
     sprite::Anchor,
     audio::Volume,
-    // ecs::query::QueryFilter,
-    // utils::Duration,
-    // dev_tools::ui_debug_overlay,
-    // utils::{ HashMap, HashSet },
+    platform::collections::{HashMap, HashSet},
 };
 
-use rustc_hash::{FxHashSet, FxHashMap};
 use rand::prelude::*;
 use regex::Regex;
-// use chrono::prelude::Local as time_local; //「Local」がbevyとバッティングするのでaliasを使う
 
 // standard library
 use std::{

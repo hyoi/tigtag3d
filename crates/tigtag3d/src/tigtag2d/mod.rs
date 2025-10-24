@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 use super::*;
 
 pub mod core_logic; // ゲームロジック(tigtag)

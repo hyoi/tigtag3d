@@ -98,6 +98,40 @@ impl Plugin for Schedule
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// WindowPluginの初期化
+#[rustfmt::skip]
+pub trait InitWindowPlugin { fn initialize() -> Self; }
+impl InitWindowPlugin for WindowPlugin
+{
+    fn initialize() -> Self
+    {
+        Self {
+            primary_window: Some(MAIN_WINDOW.clone()),
+            ..default()
+        }
+    }
+}
+
+// LogPluginの初期化
+#[rustfmt::skip]
+pub trait InitLogPlugin { fn initialize() -> Self; }
+impl InitLogPlugin for LogPlugin
+{
+    fn initialize() -> Self
+    {
+        Self {
+            filter: match misc::DEBUG()
+            {
+                true => LOG_FILTER_DEVELOP.into(),
+                false => LOG_FILTER_RELEASE.into(),
+            },
+            ..default()
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 // ローディングアニメ用2DカメラのComponentとレンダリング順序、およびカメラの位置
 #[derive(Component)]
 pub struct LoadingAnimeCam2d;

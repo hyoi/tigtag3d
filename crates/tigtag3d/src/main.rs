@@ -27,11 +27,13 @@ use std::{
     ops::{Range, Deref, DerefMut, Add, AddAssign},
     f32::consts::{PI, TAU},
     collections::VecDeque,
+    sync::LazyLock,
 };
 
 // internal submodules
 mod core_logic; // 3Dビジュアライザ
 mod tigtag2d; // ゲームロジック
+use tigtag2d::config_prelude::*;
 
 mod my_utils; // 共通ライブラリ
 use my_utils::prelude::*;

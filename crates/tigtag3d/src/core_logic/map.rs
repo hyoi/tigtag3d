@@ -23,8 +23,8 @@ impl Default for Dots3D
 {
     fn default() -> Self
     {
-        let usize_w = tigtag2d::core_logic::map::MAP_WIDTH_IN_CELLS as usize;
-        let usize_h = tigtag2d::core_logic::map::MAP_HEIGHT_IN_CELLS as usize;
+        let usize_w = MAP_WIDTH_IN_CELLS as usize;
+        let usize_h = MAP_HEIGHT_IN_CELLS as usize;
         Self {
             entities: vec![vec![None; usize_h]; usize_w],
         }
@@ -118,8 +118,8 @@ pub fn spawn_3d_map_entity(
         }
 
         //地面も相対位置でspawnする
-        let width = tigtag2d::core_logic::map::MAP_WIDTH_IN_CELLS as f32;
-        let height = tigtag2d::core_logic::map::MAP_HEIGHT_IN_CELLS as f32;
+        let width = MAP_WIDTH_IN_CELLS as f32;
+        let height = MAP_HEIGHT_IN_CELLS as f32;
         let translation =
             Vec3::new(width * 0.5, height * -0.5, 0.0) - Vec3::ONE * 0.5;
         cmds.spawn((

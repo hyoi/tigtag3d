@@ -12,6 +12,10 @@ pub const SCREEN_PIXELS_HEIGHT: f32 = PIXELS_PER_GRID * SCREEN_GRIDS_HEIGHT as f
 pub const SCREEN_GRIDS_WIDTH: i32 = 43; //memo: 25 best 43
 pub const SCREEN_GRIDS_HEIGHT: i32 = 24; //memo: 19 best 24
 
+// マップ縦横幅
+pub const MAP_WIDTH_IN_CELLS: i32 = 25; //SCREEN_GRIDS_WIDTH; // w <= SCREEN_GRIDS_WIDTH;
+pub const MAP_HEIGHT_IN_CELLS: i32 = 19 -2 ; //SCREEN_GRIDS_HEIGHT - 2; // h <= SCREEN_GRIDS_HEIGHT - 2;
+
 // アプリの情報
 pub const APP_TITLE: &str = "TigTag3D"; //env!( "CARGO_PKG_NAME" );
 pub const APP_VER: &str = env!("CARGO_PKG_VERSION");

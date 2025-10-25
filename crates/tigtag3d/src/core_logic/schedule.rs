@@ -204,8 +204,8 @@ fn change_camera3d_settings(
     camera.viewport = Some(viewport);
 
     // カメラの位置と注視点を変更する
-    let x = (tigtag2d::core_logic::map::MAP_WIDTH_IN_CELLS - 1) as f32 * 0.5;
-    let neg_y = (tigtag2d::core_logic::map::MAP_HEIGHT_IN_CELLS - 1) as f32 * -0.5;
+    let x = (MAP_WIDTH_IN_CELLS - 1) as f32 * 0.5;
+    let neg_y = (MAP_HEIGHT_IN_CELLS - 1) as f32 * -0.5;
     let look_at = Vec3::new(x, neg_y, 0.0);
     let vec3 = Vec3::Z * 20.25 + look_at;
     let transform = Transform::from_translation(vec3);

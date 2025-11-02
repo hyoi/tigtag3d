@@ -58,19 +58,26 @@ pub struct UpdateInfo(pub Option<(usize, FormatterFn)>);
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// ヘッダー／フッターのレイアウトノードのComponet
+#[derive(Component)]
+pub struct LayoutNode;
+
 // ヘッダー／フッターをspawnする
 pub fn spawn(mut cmds: Commands, asset_svr: Res<AssetServer>) -> Result
 {
     // 親ノード（GRIDレイアウト(3x3)）
-    let mut layout_node = cmds.spawn(Node {
-        // width: Val::Px(SCREEN_PIXELS_WIDTH),
-        // height: Val::Px(SCREEN_PIXELS_HEIGHT),
-        width: Val::Percent(100.0),
-        height: Val::Percent(100.0),
-        display: Display::Grid, // CSSグリッドレイアウト
-        grid_template_columns: RepeatedGridTrack::fr(3, 1.0), // ３列
-        ..default()
-    });
+    let mut layout_node = cmds.spawn((
+        LayoutNode, //マーカーComponent
+        Node {
+            width: Val::Px(SCREEN_PIXELS_WIDTH),
+            height: Val::Px(SCREEN_PIXELS_HEIGHT),
+            // width: Val::Percent(100.0),
+            // height: Val::Percent(100.0),
+            display: Display::Grid, // CSSグリッドレイアウト
+            grid_template_columns: RepeatedGridTrack::fr(3, 1.0), // ３列
+            ..default()
+        },
+    ));
 
     // 子のTextBlockをspawnする
     HEADER_FOOTER.iter().for_each(|conf| {
@@ -159,6 +166,66 @@ impl AddTextBlock for EntityCommands<'_>
 
         self // method-chain
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+// 全画面時にヘッダー／フッターの位置を画面中央に寄せる
+pub fn adjust_header_footer_layout(
+    window: Single<&Window>,
+    option_camera: Option<Single<&Camera, With<IsDefaultUiCamera>>>,
+    mut headder_footer_layout_node: Single<
+        &mut Node,
+        With<header_footer::LayoutNode>,
+    >,
+) -> Result
+{
+    // 準備
+    let Some(camera) = option_camera
+    else
+    {
+        return Ok(());
+    };
+
+    // 全画面なら
+    if matches!(window.mode, WindowMode::BorderlessFullscreen(_))
+    {
+        // モニタの縦横がウィンドウの各辺より長いなら
+        if let Some(rect) = camera.logical_viewport_rect()
+            && (rect.width() > SCREEN_PIXELS_WIDTH
+                || rect.height() > SCREEN_PIXELS_HEIGHT)
+        {
+            // UIの表示位置を調整する
+            let adjust_x = (rect.width() - SCREEN_PIXELS_WIDTH) * 0.5;
+            let adjust_y = (rect.height() - SCREEN_PIXELS_HEIGHT) * 0.5;
+            headder_footer_layout_node.left = Val::Px(adjust_x);
+            headder_footer_layout_node.top = Val::Px(adjust_y);
+
+            #[cfg(debug_assertions)]
+            {
+                let top = headder_footer_layout_node.top;
+                let left = headder_footer_layout_node.left;
+                dbg!(top, left);
+            }
+        }
+    }
+    // 全画面以外で調整値が設定されているなら
+    else if headder_footer_layout_node.left != Val::Auto
+        || headder_footer_layout_node.top != Val::Auto
+    {
+        // 調整値をクリアする
+        headder_footer_layout_node.left = Val::Auto;
+        headder_footer_layout_node.top = Val::Auto;
+
+        #[cfg(debug_assertions)]
+        {
+            let top = headder_footer_layout_node.top;
+            let left = headder_footer_layout_node.left;
+            dbg!(top, left);
+        }
+    }
+
+    Ok(())
 }
 
 ////////////////////////////////////////////////////////////////////////////////

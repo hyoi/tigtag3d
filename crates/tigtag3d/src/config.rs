@@ -188,6 +188,7 @@ const ER_BAD_SCREEN_DESIGN: &str = "Frame design unmatch width/height parameters
 ////////////////////////////////////////////////////////////////////////////////
 
 // アジャスタ（マップ座標から画面座標への変換調整値）
+// Note: tigtag(2d)の同名のグローバル定数をモジュールの識別子探索パスを利用して置き換える
 pub const ADJUST_MAP_ON_SCREEN: IVec2 = IVec2::new(
     VIEWPORT_MINIMAP_SIZE.x + SCREEN_GRIDS_WIDTH,
     VIEWPORT_MINIMAP_SIZE.y + 1,

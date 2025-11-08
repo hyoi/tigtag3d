@@ -49,38 +49,65 @@ pub fn spawn_3d_player(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// プレイヤーの子Entityとしてミニマップ用2Dカメラをspawnする
+// ミニマップ用2Dカメラをspawnする（プレイヤーの子Entityとして）
 pub fn spawn_minimap_camera(
-    player: Query<Entity, With<tigtag2d::core_logic::player::Player>>,
+    player_id: Single<Entity, With<tigtag2d::core_logic::player::Player>>,
+    window: Single<&Window>,
+    option_scale_factor: Option<Res<appctrl_input::ScaleFactor>>,
     mut cmds: Commands,
 ) -> Result
 {
-    // 準備
-    let player_id = player.single()?;
+    if let Some(scale_factor) = option_scale_factor
+    {
+        // アジャスターの算出用にCurrentモニターの解像度をを取得する
+        let width = window.resolution.physical_width();
+        let height = window.resolution.physical_height();
 
-    // ミニマップ用2Dカメラをspawnする
-    let screen_frame = ScreenFrame::default();
-    let zero = screen_frame.minimap.zero.as_vec2() * PIXELS_PER_GRID;
-    let size = screen_frame.minimap.size.as_vec2() * PIXELS_PER_GRID;
-    let viewport = Viewport {
-        physical_position: zero.as_uvec2(),
-        physical_size: size.as_uvec2(),
-        ..default()
-    };
-    let order = CAMERA_ORDER_MINIMAP_2D;
-    let child = cmds
-        .spawn((
-            Camera {
-                viewport: Some(viewport),
-                order,
-                clear_color: COLOR_NONE.into(),
+        // 準備
+        let appctrl_input::ScaleFactor(scale_factor) = *scale_factor;
+        let screen_frame = ScreenFrame::default();
+        let zero = screen_frame.minimap.zero.as_vec2() * PIXELS_PER_GRID;
+        let size = screen_frame.minimap.size.as_vec2() * PIXELS_PER_GRID;
+
+        // window.modeが全画面なら
+        let viewport = if let Some((scale, _rect)) = scale_factor
+        {
+            // viewportをアジャスターとスケールファクター使って更新する
+            let adjustor = Vec2::new(
+                width as f32 - SCREEN_PIXELS_WIDTH * scale,
+                height as f32 - SCREEN_PIXELS_HEIGHT * scale,
+            ) * 0.5;
+            Viewport {
+                physical_position: (zero * scale + adjustor).as_uvec2(),
+                physical_size: (size * scale).as_uvec2(),
                 ..default()
-            },
-            Camera2d,
-            MinimapCamera,
-        ))
-        .id();
-    cmds.entity(player_id).add_child(child);
+            }
+        }
+        else
+        {
+            // viewportのスケールファクターを解除する
+            Viewport {
+                physical_position: zero.as_uvec2(),
+                physical_size: size.as_uvec2(),
+                ..default()
+            }
+        };
+
+        // ミニマップ用2Dカメラをspawnする
+        let child = cmds
+            .spawn((
+                Camera {
+                    viewport: Some(viewport),
+                    order: CAMERA_ORDER_MINIMAP_2D,
+                    clear_color: COLOR_NONE.into(),
+                    ..default()
+                },
+                Camera2d,
+                MinimapCamera,
+            ))
+            .id();
+        cmds.entity(*player_id).add_child(child);
+    }
 
     Ok(())
 }

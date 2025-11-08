@@ -16,6 +16,21 @@ impl Plugin for Schedule
             ;
 
         //--------------------------------------------------------------------------
+        // 常に実行する処理（Update without MyState）
+        application
+            // ループ処理
+            .add_systems(
+                Update, // without MyState
+                (
+                    // 全画面切替とviewportを連動させる
+                    adjust_viewport_camera_minimap,
+                    adjust_viewport_camera3d,
+                )
+                    .after(appctrl_input::update_scale_factor)
+                    .run_if(resource_changed::<appctrl_input::ScaleFactor>),
+            );
+
+        //--------------------------------------------------------------------------
         // 初期化（MyState::Initialize）
         application
             // 後処理
@@ -210,6 +225,95 @@ fn change_camera3d_settings(
     let vec3 = Vec3::Z * 20.25 + look_at;
     let transform = Transform::from_translation(vec3);
     cmds.entity(entity).insert(transform);
+
+    Ok(())
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+// ミニマップ用カメラのviewportの位置ずれを調整する
+fn adjust_viewport_camera_minimap(
+    option_camera: Option<Single<&mut Camera, With<player::MinimapCamera>>>,
+    window: Single<&Window>,
+    option_scale_factor: Option<Res<appctrl_input::ScaleFactor>>,
+) -> Result
+{
+    if let Some(scale_factor) = option_scale_factor
+        && let Some(mut camera) = option_camera
+        && let Some(ref mut viewport) = camera.viewport
+    {
+        // アジャスターの算出用にCurrentモニターの解像度をを取得する
+        let width = window.resolution.physical_width();
+        let height = window.resolution.physical_height();
+
+        // 準備
+        let appctrl_input::ScaleFactor(scale_factor) = *scale_factor;
+        let screen_frame = ScreenFrame::default();
+        let zero = screen_frame.minimap.zero.as_vec2() * PIXELS_PER_GRID;
+        let size = screen_frame.minimap.size.as_vec2() * PIXELS_PER_GRID;
+
+        // window.modeが全画面なら
+        if let Some((scale, _rect)) = scale_factor
+        {
+            // viewportをアジャスターとスケールファクター使って更新する
+            let adjustor = Vec2::new(
+                width as f32 - SCREEN_PIXELS_WIDTH * scale,
+                height as f32 - SCREEN_PIXELS_HEIGHT * scale,
+            ) * 0.5;
+            viewport.physical_position = (zero * scale + adjustor).as_uvec2();
+            viewport.physical_size = (size * scale).as_uvec2();
+        }
+        else
+        {
+            // viewportのスケールファクターを解除する
+            viewport.physical_position = zero.as_uvec2();
+            viewport.physical_size = size.as_uvec2();
+        }
+    }
+
+    Ok(())
+}
+
+//------------------------------------------------------------------------------
+
+// 3Dカメラのviewportの位置ずれを調整する
+fn adjust_viewport_camera3d(
+    option_camera: Option<Single<&mut Camera, With<SimpleCamera3dOrbit>>>,
+    window: Single<&Window>,
+    option_scale_factor: Option<Res<appctrl_input::ScaleFactor>>,
+) -> Result
+{
+    if let Some(scale_factor) = option_scale_factor
+        && let Some(mut camera) = option_camera
+        && let Some(ref mut viewport) = camera.viewport
+    {
+        // アジャスターの算出用にCurrentモニターの解像度をを取得する
+        let width = window.resolution.physical_width();
+        let height = window.resolution.physical_height();
+
+        // 準備
+        let appctrl_input::ScaleFactor(scale_factor) = *scale_factor;
+        let screen_frame = ScreenFrame::default();
+
+        // window.modeが全画面なら
+        if let Some((scale, _)) = scale_factor
+        {
+            // viewportをアジャスターとスケールファクター使って更新する
+            let adjustor = Vec2::new(
+                width as f32 - SCREEN_PIXELS_WIDTH * scale,
+                height as f32 - SCREEN_PIXELS_HEIGHT * scale,
+            ) * 0.5;
+            viewport.physical_position =
+                (screen_frame.viewport.origin * scale + adjustor).as_uvec2();
+            viewport.physical_size = (screen_frame.viewport.size * scale).as_uvec2();
+        }
+        else
+        {
+            // viewportのスケールファクターを解除する
+            viewport.physical_position = screen_frame.viewport.origin.as_uvec2();
+            viewport.physical_size = screen_frame.viewport.size.as_uvec2();
+        }
+    }
 
     Ok(())
 }

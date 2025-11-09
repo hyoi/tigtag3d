@@ -9,6 +9,7 @@ mod demo_play; // demoロジック(tigtag)
 mod config; // 設定各種
 pub mod config_prelude
 {
+    #[rustfmt::skip]
     pub use super::config::prelude::
     {
         PIXELS_PER_GRID,

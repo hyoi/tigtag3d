@@ -40,14 +40,13 @@ impl Plugin for Schedule
                         (
                             // window.mode変更
                             appctrl_input::toggle_fullscreen,
-                            // スケールファクターを再計算して設定
+                            // スケールファクター他を計算して設定
                             appctrl_input::update_scale_factor
                                 .run_if(any_match_filter::<Changed<Window>>),
                             // ヘッダー／フッターの位置ずれを調整する
-                            header_footer::adjust_header_footer_layout
-                                .run_if(
-                                    resource_changed::<appctrl_input::ScaleFactor>,
-                                ),
+                            header_footer::adjust_header_footer_layout.run_if(
+                                resource_changed::<appctrl_input::ScaleFactor>,
+                            ),
                             // for Debug
                             dbg_show_resource_scale_factor
                                 .run_if(

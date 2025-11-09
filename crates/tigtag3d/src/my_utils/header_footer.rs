@@ -170,45 +170,25 @@ impl AddTextBlock for EntityCommands<'_>
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// 全画面時にヘッダー／フッターの位置を画面中央に寄せる
+// 全画面時にヘッダー／フッターの位置を構成して画面中央に寄せる
 pub fn adjust_header_footer_layout(
     window: Single<&Window>,
-    // option_camera: Option<Single<&Camera, With<IsDefaultUiCamera>>>,
     mut headder_footer_layout_node: Single<&mut Node, With<LayoutNode>>,
     option_scale_factor: Option<Res<appctrl_input::ScaleFactor>>,
-    mut local_logical_viewport: Local<Rect>,
 ) -> Result
 {
     // 準備
-    let scale_factor = option_scale_factor.ok_or("Resource not found.")?;
+    let res_scale_factor = option_scale_factor.ok_or("Resource not found.")?;
 
     // カメラにviewportがセットされているなら
-    // if let Some(camera) = option_camera
-    //     && let Some(viewport_rect) = camera.logical_viewport_rect()
-    if let appctrl_input::ScaleFactor(Some((_scale, viewport_rect))) = *scale_factor
+    if let appctrl_input::ScaleFactor(Some((_, ui_adjuster, _))) = *res_scale_factor
     {
-        // viewportが変化したなら
-        if viewport_rect != *local_logical_viewport
+        // window.modeが全画面なら
+        if matches!(window.mode, WindowMode::BorderlessFullscreen(_))
         {
-            // viewportの変化検知用に現在の値を保存する
-            *local_logical_viewport = viewport_rect;
-
-            // window.modeが全画面なら
-            if matches!(window.mode, WindowMode::BorderlessFullscreen(_))
-            {
-                // viewportの縦または横が、ウィンドウ各辺の設定より長いなら
-                if viewport_rect.width() > SCREEN_PIXELS_WIDTH
-                    || viewport_rect.height() > SCREEN_PIXELS_HEIGHT
-                {
-                    // UIの表示位置（top、left）を調整する
-                    let adjust_x =
-                        (viewport_rect.width() - SCREEN_PIXELS_WIDTH) * 0.5;
-                    let adjust_y =
-                        (viewport_rect.height() - SCREEN_PIXELS_HEIGHT) * 0.5;
-                    headder_footer_layout_node.left = Val::Px(adjust_x);
-                    headder_footer_layout_node.top = Val::Px(adjust_y);
-                }
-            }
+            // UIの表示位置（top、left）を調整する
+            headder_footer_layout_node.left = Val::Px(ui_adjuster.x);
+            headder_footer_layout_node.top = Val::Px(ui_adjuster.y);
         }
     }
     // 全画面以外の時、調整値が設定されていたなら

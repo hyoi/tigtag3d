@@ -52,17 +52,12 @@ pub fn spawn_3d_player(
 // ミニマップ用2Dカメラをspawnする（プレイヤーの子Entityとして）
 pub fn spawn_minimap_camera(
     player_id: Single<Entity, With<tigtag2d::core_logic::player::Player>>,
-    window: Single<&Window>,
     option_scale_factor: Option<Res<appctrl_input::ScaleFactor>>,
     mut cmds: Commands,
 ) -> Result
 {
     if let Some(scale_factor) = option_scale_factor
     {
-        // アジャスターの算出用にCurrentモニターの解像度をを取得する
-        let width = window.resolution.physical_width();
-        let height = window.resolution.physical_height();
-
         // 準備
         let appctrl_input::ScaleFactor(scale_factor) = *scale_factor;
         let screen_frame = ScreenFrame::default();
@@ -70,16 +65,13 @@ pub fn spawn_minimap_camera(
         let size = screen_frame.minimap.size.as_vec2() * PIXELS_PER_GRID;
 
         // window.modeが全画面なら
-        let viewport = if let Some((scale, _rect)) = scale_factor
+        let viewport =
+            if let Some((scale_facter, _, viewport_adjuster)) = scale_factor
         {
-            // viewportをアジャスターとスケールファクター使って更新する
-            let adjustor = Vec2::new(
-                width as f32 - SCREEN_PIXELS_WIDTH * scale,
-                height as f32 - SCREEN_PIXELS_HEIGHT * scale,
-            ) * 0.5;
             Viewport {
-                physical_position: (zero * scale + adjustor).as_uvec2(),
-                physical_size: (size * scale).as_uvec2(),
+                physical_position:
+                    (zero * scale_facter + viewport_adjuster).as_uvec2(),
+                physical_size: (size * scale_facter).as_uvec2(),
                 ..default()
             }
         }
